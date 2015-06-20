@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Requester' do
+describe Rubeetup::Requester do
 
   describe '#initialize' do
     context 'with valid auth data' do

@@ -4,10 +4,11 @@ module Rubeetup
   class Requester
     include Utilities
 
-    attr_reader :auth
+    attr_reader :auth, :request_builder
 
     def initialize(args = {})
       self.auth = args
+      @request_builder = RequestBuilder.new
     end
 
     def auth=(args = {})
@@ -21,8 +22,10 @@ module Rubeetup
           (val = auth[:api_key]) && present?(val)
     end
 
-    def method_missing(request, *args)
-
+    def method_missing(name, *args)
+      # This operation will raise an error if request does not exist, or if args are missing
+      request = request_builder.compose_request(name, *args)
+      request.execute
     end
   end
 end
