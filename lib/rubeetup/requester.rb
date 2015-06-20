@@ -22,7 +22,7 @@ module Rubeetup
     end
 
     def method_missing(request, *args)
-      
+
     end
   end
 end
