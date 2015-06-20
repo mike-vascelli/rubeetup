@@ -5,7 +5,7 @@ describe 'Requester' do
   describe '#initialize' do
     context 'with valid auth data' do
       it 'does nothing' do
-        expect{Rubeetup::Requester.new(api_key: '1234')}.not_to raise_error(Rubeetup::InvalidAuthenticationError)
+        expect{Rubeetup::Requester.new(api_key: '1234')}.not_to raise_error
       end
     end
 

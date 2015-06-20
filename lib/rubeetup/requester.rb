@@ -2,12 +2,15 @@ require 'utilities'
 
 module Rubeetup
   class Requester
-
     include Utilities
 
-    attr_accessor :auth
+    attr_reader :auth
 
     def initialize(args = {})
+      self.auth = args
+    end
+
+    def auth=(args = {})
       @auth = args
       validate_auth!
     end

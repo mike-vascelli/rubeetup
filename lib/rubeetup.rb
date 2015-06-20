@@ -16,6 +16,8 @@ module Rubeetup
     args || @auth_options
   end
 
+  # Include this call in a new file: config/initializers/rubeetup.rb
+  # args must be a Hash including -->  api_key: 'val'
   def self.set_default_auth(args)
     @auth_options = args
   end
