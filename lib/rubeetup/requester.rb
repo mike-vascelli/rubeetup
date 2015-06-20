@@ -24,8 +24,8 @@ module Rubeetup
 
     def method_missing(name, *args)
       # This operation will raise an error if request does not exist, or if args are missing
-      request = request_builder.compose_request(name, *args)
-      request.execute
+      request = request_builder.compose_request(name, args)
+      #request.execute
     end
   end
 end
