@@ -2,6 +2,7 @@ require 'rubeetup/version'
 require 'rubeetup/requester'
 require 'rubeetup/errors'
 require 'rubeetup/request_builder'
+require 'rubeetup/request'
 
 module Rubeetup
 

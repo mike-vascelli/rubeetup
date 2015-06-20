@@ -4,7 +4,7 @@ module Rubeetup
     def compose_request(name, args)
       verb, method = split(name)
       http_verb = determine_http_verb(verb)
-      Request.new(verb: http_verb, method: method, options: args[0], api_version: args[1])
+      Request.new(verb: http_verb, method: method, options: args[0], version: args[1])
     end
 
     def split(name)
