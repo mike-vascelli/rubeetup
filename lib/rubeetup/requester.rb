@@ -21,6 +21,8 @@ module Rubeetup
           (val = auth[:api_key]) && present?(val)
     end
 
+    def method_missing(request, *args)
+      
+    end
   end
-
 end
