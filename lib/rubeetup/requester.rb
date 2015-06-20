@@ -1,0 +1,23 @@
+require 'utilities'
+
+module Rubeetup
+  class Requester
+
+    include Utilities
+
+    attr_accessor :auth
+
+    def initialize(args = {})
+      @auth = args
+      validate_auth!
+    end
+
+    def validate_auth!
+      raise InvalidAuthenticationError, 'Must respond to #merge' unless auth.respond_to? :merge
+      raise InvalidAuthenticationError, "Requires ---> {api_key: /[^\s]+/}" unless
+          (val = auth[:api_key]) && present?(val)
+    end
+
+  end
+
+end
