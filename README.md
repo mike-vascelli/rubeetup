@@ -1,4 +1,7 @@
 <a href="https://codeclimate.com/github/mike-vascelli/rubeetup"><img src="https://codeclimate.com/github/mike-vascelli/rubeetup/badges/gpa.svg" /></a>
+<a href="https://codeclimate.com/github/mike-vascelli/rubeetup"><img src="https://travis-ci.org/mike-vascelli/rubeetup.svg?branch=master"/></a>
+<a href="https://inch-ci.org/github/mike-vascelli/rubeetup"><img src="http://inch-ci.org/github/mike-vascelli/rubeetup.svg?branch=master"/></a>
+
 
 # Rubeetup
 
