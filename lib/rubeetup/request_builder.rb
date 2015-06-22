@@ -14,7 +14,7 @@ module Rubeetup
     end
 
     def split(name)
-      pos = name =~ /_/
+      pos = (name =~ /_/)
       pos ? [ name[0...pos].to_sym, name[(pos + 1)...name.length].to_sym ] : [nil, nil]
     end
 

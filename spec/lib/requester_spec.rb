@@ -9,23 +9,24 @@ describe Rubeetup::Requester do
       end
     end
 
-    context 'with non-Hash-behaving auth data' do
-      it 'raises InvalidAuthenticationError' do
-        expect{Rubeetup::Requester.new('54545')}.to raise_error(Rubeetup::InvalidAuthenticationError)
+    context 'with invalid auth data' do
+      context '(non-Hash-behaving auth data)' do
+        it 'raises InvalidAuthenticationError' do
+          expect{Rubeetup::Requester.new('54545')}.to raise_error(Rubeetup::InvalidAuthenticationError)
+        end
+      end
+
+      context '(Hash missing :api-key)' do
+        it 'raises InvalidAuthenticationError' do
+          expect{Rubeetup::Requester.new(key: 'val')}.to raise_error(Rubeetup::InvalidAuthenticationError)
+        end
       end
     end
-
-    context 'with Hash missing :api-key' do
-      it 'raises InvalidAuthenticationError' do
-        expect{Rubeetup::Requester.new(key: 'val')}.to raise_error(Rubeetup::InvalidAuthenticationError)
-      end
-    end
-
   end
 
   describe 'handling requests' do
     let(:agent) {Rubeetup::Requester.new(api_key: 'val')}
-    let(:request) {double(execute!: nil)}
+    let(:request) {instance_double('Request', execute!: nil)}
 
     before(:each) do
       allow(agent.request_builder).to receive(:compose_request).and_return(request)

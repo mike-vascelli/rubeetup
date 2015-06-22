@@ -10,7 +10,7 @@ module Rubeetup
       @method = args[:method]
       @options = args[:options]
       @api_version = args[:version] || 2
-      @sender = Http_Sender.new
+      @sender = #Http_Sender.new
       validate_request!
     end
 
