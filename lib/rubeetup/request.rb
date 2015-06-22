@@ -1,8 +1,9 @@
 module Rubeetup
   class Request
+
     VERBS = [:create, :get, :edit, :delete]
 
-    attr_reader :sender
+    attr_reader :verb, :method, :options, :api_version, :sender
 
     def initialize(args = {})
       @verb = args[:verb]
@@ -20,14 +21,15 @@ module Rubeetup
 
     def validate_verb!
       unless VERBS.include? verb
-        raise RequestError, <<-END.gsub(/^ {10}/, '')
+        message = <<-END.gsub(/^ {10}/, '')
           '#{verb}' is an invalid method.
           The only available requests must begin with any of: #{VERBS.join(', ')}
         END
+        raise RequestError, message
       end
     end
 
-    def execute
+    def execute!
       sender.send(self)
     end
 

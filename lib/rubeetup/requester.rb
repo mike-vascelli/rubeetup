@@ -6,12 +6,12 @@ module Rubeetup
 
     attr_reader :auth, :request_builder
 
-    def initialize(args = {})
+    def initialize(args)
       self.auth = args
       @request_builder = RequestBuilder.new
     end
 
-    def auth=(args = {})
+    def auth=(args)
       @auth = args
       validate_auth!
     end
@@ -23,10 +23,15 @@ module Rubeetup
     end
 
     def method_missing(name, *args)
+      merge_auth(args)
       # This operation will raise an error if request does not exist, or if args are missing
-      args[0] = args[0].respond_to?(:merge) ? args[0].merge(auth) : auth
       request = request_builder.compose_request(name, args)
-      request.execute
+      request.execute!
+    end
+
+    def merge_auth(args)
+      first_arg = args[0]
+      args[0] = first_arg.respond_to?(:merge) ? first_arg.merge(auth) : auth
     end
   end
 end
