@@ -3,6 +3,7 @@ require 'rubeetup/requester'
 require 'rubeetup/errors'
 require 'rubeetup/request_builder'
 require 'rubeetup/request'
+require 'rubeetup/request_sender'
 
 module Rubeetup
 

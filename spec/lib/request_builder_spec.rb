@@ -10,26 +10,12 @@ describe Rubeetup::RequestBuilder do
     end
   end
 
-
-  ###############################################################
-  ###############################################################
-  #########   PRIVATE METHODS  ##################################
-  ###############################################################
-
+  #private method
   describe '#split' do
     context 'with invalid input name(missing underscore)' do
       it 'returns [nil, nil]' do
         result = builder.split(:getevents)
         expect(result == [nil, nil]).to be true
-      end
-    end
-  end
-
-  describe '#determine_http_verb' do
-    context 'with invalid input verb' do
-      it 'it returns   :invalid' do
-        result = builder.determine_http_verb(:put)
-        expect(result == :invalid).to be true
       end
     end
   end
