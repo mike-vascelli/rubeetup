@@ -18,8 +18,8 @@ module Rubeetup
 
     def validate_auth!
       raise InvalidAuthenticationError, 'Must respond to #merge' unless auth.respond_to? :merge
-      raise InvalidAuthenticationError, "Requires ---> {api_key: /[^\s]+/}" unless
-        (val = auth[:api_key]) && present?(val)
+      raise InvalidAuthenticationError, "Requires ---> {key: /[^\s]+/}" unless
+        (val = auth[:key]) && present?(val)
     end
 
     def method_missing(name, *args)

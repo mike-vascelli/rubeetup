@@ -5,7 +5,7 @@ describe Rubeetup::Requester do
   describe '#initialize' do
     context 'with valid auth data' do
       it 'does nothing' do
-        expect{Rubeetup::Requester.new(api_key: '1234')}.not_to raise_error
+        expect{Rubeetup::Requester.new(key: '1234')}.not_to raise_error
       end
     end
 
@@ -16,16 +16,16 @@ describe Rubeetup::Requester do
         end
       end
 
-      context '(Hash missing :api-key)' do
+      context '(Hash missing :key)' do
         it 'raises InvalidAuthenticationError' do
-          expect{Rubeetup::Requester.new(key: 'val')}.to raise_error(Rubeetup::InvalidAuthenticationError)
+          expect{Rubeetup::Requester.new(keyyy: 'val')}.to raise_error(Rubeetup::InvalidAuthenticationError)
         end
       end
     end
   end
 
   describe 'handling requests' do
-    let(:agent) {Rubeetup::Requester.new(api_key: 'val')}
+    let(:agent) {Rubeetup::Requester.new(key: 'val')}
     let(:request) {instance_double('Request', execute!: nil)}
 
     before(:each) do
