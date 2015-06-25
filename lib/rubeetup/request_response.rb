@@ -8,5 +8,10 @@ module Rubeetup
 
       JSON.parse(raw_data, symbolyze_names: true)
     end
-  end
+=begin
+    def method_missing(name, *args)
+
+    end
+=end
+ end
 end

@@ -26,7 +26,7 @@ describe Rubeetup::Requester do
 
   describe 'handling requests' do
     let(:agent) {Rubeetup::Requester.new(key: 'val')}
-    let(:request) {instance_double('Request', execute!: nil)}
+    let(:request) {instance_double('Request', execute: nil)}
 
     before(:each) do
       allow(agent.request_builder).to receive(:compose_request).and_return(request)
@@ -38,7 +38,7 @@ describe Rubeetup::Requester do
     end
 
     it 'attempts to execute any user-sent request' do
-      expect(request).to receive(:execute!)
+      expect(request).to receive(:execute)
       agent.get_events
     end
   end

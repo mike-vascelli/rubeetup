@@ -13,10 +13,10 @@ module Rubeetup
 
     def auth=(args)
       @auth = args
-      validate_auth!
+      validate_auth
     end
 
-    def validate_auth!
+    def validate_auth
       raise InvalidAuthenticationError, 'Must respond to #merge' unless auth.respond_to? :merge
       raise InvalidAuthenticationError, "Requires ---> {key: /[^\s]+/}" unless
         (val = auth[:key]) && present?(val)
@@ -26,7 +26,7 @@ module Rubeetup
       merge_auth(args)
       # This operation will raise an error if request does not exist, or if args are missing
       request = request_builder.compose_request(name, args)
-      request.execute!
+      request.execute
     end
 
     def merge_auth(args)
