@@ -15,7 +15,7 @@ describe Rubeetup do
     context 'with default auth data' do
       it 'returns the default authentication data received by the user' do
         default_args = {key: '12345'}
-        Rubeetup.set_default_auth(default_args)
+        Rubeetup.default_auth(default_args)
         expect(Rubeetup.get_auth_data(default_args)).to eq(default_args)
       end
     end
@@ -31,7 +31,7 @@ describe Rubeetup do
       it 'returns the new authentication data received by the user' do
         default_args = {key: '12345'}
         args = {key: '12345'}
-        Rubeetup.set_default_auth(default_args)
+        Rubeetup.default_auth(default_args)
         expect(Rubeetup.get_auth_data(args)).to eq(args)
       end
     end

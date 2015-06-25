@@ -8,6 +8,7 @@ module Utilities
   end
 
   def stringify(options)
-    options.map {|key, val| "#{key}=#{val}"}.join('&') if options.respond_to? :map
+    return unless options.respond_to? :map
+    options.map { |key, val| "#{key}=#{val}" }.join('&')
   end
 end

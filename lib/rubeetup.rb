@@ -7,17 +7,15 @@ require 'rubeetup/request_sender'
 require 'rubeetup/request_response'
 
 module Rubeetup
-
   def self.setup(args)
     agent.new(get_auth_data(args))
   end
 
   # Include this call in a new file: config/initializers/rubeetup.rb
-  # args must be a Hash including -->  api_key: 'val'
-  def self.set_default_auth(args)
+  # args must be a Hash including -->  key: 'val'
+  def self.default_auth(args)
     @auth_options = args
   end
-
 
   private
 
@@ -30,5 +28,4 @@ module Rubeetup
   def self.get_auth_data(args)
     args || @auth_options
   end
-
 end

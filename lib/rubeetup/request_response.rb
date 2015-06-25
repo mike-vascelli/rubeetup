@@ -1,17 +1,24 @@
 require 'json'
+require 'net/http'
 
 module Rubeetup
   class RequestResponse
-
     def initialize(raw_data)
-      # CHECK HEADER FIRST AND IN CASE THROW EXCEPTION
-
-      JSON.parse(raw_data, symbolyze_names: true)
+      fail MeetupResponseError, self.class.generate_message(raw_data) unless
+          raw_data.is_a? Net::HTTPSuccess
+      @data = JSON.parse(raw_data.body, symbolize_names: true)
     end
-=begin
-    def method_missing(name, *args)
 
+    def data
+      @data[:results] || [@data]
     end
-=end
- end
+
+    class << self
+      private
+
+      def self.generate_message(data)
+        "something wrong with response from Meetup: #{data.body}"
+      end
+    end
+  end
 end

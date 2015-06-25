@@ -2,8 +2,7 @@ require 'utilities'
 
 module Rubeetup
   module MeetupCatalog
-
-    include Utilities
+    extend Utilities
 
     # name is a symbol
     def find_in_catalog(name)
@@ -11,28 +10,28 @@ module Rubeetup
     end
 
     def required_options
-      raise CatalogError, 'Cannot find options. Must first call: #find_in_catalog' unless @request_entry
+      @request_entry || (fail CatalogError, self.class.error_message('options'))
       @request_entry[:options]
     end
 
     def request_path
-      raise CatalogError, 'Cannot find path. Must first call: #find_in_catalog' unless @request_entry
+      @request_entry || (fail CatalogError, self.class.error_message('path'))
       @request_entry[:path]
     end
 
-
     private
+
+    def self.error_message(object)
+      "Cannot find #{object}. Must first call: \
+        MeetupCatalog#find_in_catalog('name')"
+    end
 
     def self.requests
       @requests = {
-        get_events: {path: lambda {|options| "/2/events?#{stringify(options)}"},
-                     options: [:event_id, :group_domain, :group_id, :group_urlname, :member_id, :rsvp, :venue_id]}
-
-
-
+        get_events: { path: ->(options) { "/2/events?#{stringify(options)}" },
+                      options: [:event_id, :group_domain, :group_id,
+                                :group_urlname, :member_id, :rsvp, :venue_id] }
       }
     end
-
-
   end
 end

@@ -1,7 +1,9 @@
 require 'net/http'
+require 'utilities'
 
 module Rubeetup
   class RequestSender
+    include Utilities
 
     HOST = 'api.meetup.com'
 
@@ -13,14 +15,17 @@ module Rubeetup
     end
 
     def get_response(request)
-      response.new(fetch(request))
+      response.new(fetch(request)).data
     end
-
 
     private
 
     def fetch(request)
-      http.send_request(request.http_verb.upcase, request.method_path, request.options)
+      http.send_request(
+        request.http_verb.upcase,
+        request.method_path,
+        stringify(request.options)
+      )
     end
   end
 end

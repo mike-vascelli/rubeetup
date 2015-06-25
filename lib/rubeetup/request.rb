@@ -2,7 +2,6 @@ require 'meetup_catalog'
 
 module Rubeetup
   class Request
-
     include MeetupCatalog
 
     attr_reader :http_verb, :method_path, :options, :api_version, :sender
@@ -20,7 +19,6 @@ module Rubeetup
       sender.get_response(self)
     end
 
-
     private
 
     def validate_request(args)
@@ -29,28 +27,33 @@ module Rubeetup
     end
 
     def verify_existence(name)
-      unless find_in_catalog(name)
-        message = <<-DOC.gsub(/ {10}/, '')
-          '#{name}' is an invalid request.
-          This request does not exist in the catalog of supported requests.
-          Please consult the catalog or the provided documentation for the \
-          complete list of requests.
-        DOC
-        raise RequestError, message
-      end
+      fail RequestError, existence_message(name) unless find_in_catalog(name)
     end
 
     def validate_options(options)
       required_keys = required_options
-      unless options.keys.any? {|key| required_keys.include? key}
-        message = <<-DOC.gsub(/ {10}/, '')
-          '#{options.inspect}' does not include the required parameters.
-          This request cannot be completed as is.
-          Please consult the catalog or the provided documentation for the \
-          complete list of requests, and their respective required parameters.
-        DOC
-        raise RequestError, message
-      end
+      fail RequestError, options_message(options) unless
+        options.keys.any? { |key| required_keys.include? key }
     end
+
+    def self.existence_message(name)
+      <<-DOC.gsub(/^ {8}/, '')
+        '#{name}' is an invalid request.
+        This request does not exist in the catalog of supported requests.
+        Please consult the catalog or the provided documentation for the \
+        complete list of requests.
+      DOC
+    end
+
+    def self.options_message(options)
+      <<-DOC.gsub(/^ {8}/, '')
+        '#{options.inspect}' does not include the required parameters.
+        This request cannot be completed as is.
+        Please consult the catalog or the provided documentation for the \
+        complete list of requests, and their respective required parameters.
+      DOC
+    end
+
+    private_class_method :existence_message, :options_message
   end
 end

@@ -1,5 +1,6 @@
 module Rubeetup
-  class InvalidAuthenticationError < StandardError; end
-  class RequestError < StandardError; end
-  class CatalogError < StandardError; end
+  InvalidAuthenticationError = Class.new(StandardError)
+  RequestError = Class.new(StandardError)
+  CatalogError = Class.new(StandardError)
+  MeetupResponseError = Class.new(StandardError)
 end

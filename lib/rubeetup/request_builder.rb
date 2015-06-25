@@ -1,5 +1,8 @@
 module Rubeetup
   class RequestBuilder
+    VERBS = { create: :post, get: :get, edit: :post, delete: :delete }
+
+    private_constant :VERBS
 
     attr_reader :request
 
@@ -9,34 +12,42 @@ module Rubeetup
 
     def compose_request(name, args)
       klass = self.class
-      verb = klass.get_verb(name)
-      klass.validate_verb(verb)
-      request.new(name: name, http_verb: klass.infer_http_verb(verb), options: args[0], version: args[1])
+      # NOTE: Not sure if I like this private class method crap...
+      verb = klass.send :get_verb, name
+      klass.send :validate_verb, verb
+      request.new(
+        name: name,
+        http_verb: klass.send(:infer_http_verb, verb),
+        options: args[0],
+        version: args[1]
+      )
     end
 
+    class << self
+      private
 
-    private
-
-    VERBS = {create: :post, get: :get, edit: :post, delete: :delete}
-
-    def self.get_verb(name)
-      pos = (name =~ /_/)
-      pos ? name[0...pos].to_sym : nil
-    end
-
-    def self.validate_verb(verb)
-      valid_verbs = VERBS.keys
-      unless valid_verbs.include? verb
-        message = <<-DOC.gsub(/ {10}/, '')
-          '#{verb}' is an invalid method.
-          The only available requests must begin with any of: #{valid_verbs.join(', ')}
-        DOC
-        raise RequestError, message
+      def get_verb(name)
+        pos = (name =~ /_/)
+        pos ? name[0...pos].to_sym : nil
       end
-    end
 
-    def self.infer_http_verb(verb)
-      VERBS[verb]
+      def validate_verb(verb)
+        valid_verbs = VERBS.keys
+        fail RequestError, error_message(verb, valid_verbs) unless
+          valid_verbs.include? verb
+      end
+
+      def error_message(verb, valid_verbs)
+        <<-DOC.gsub(/^ {10}/, '')
+          '#{verb}' is an invalid method.
+          The only available requests must begin with any of:
+          #{valid_verbs.join(', ')}
+        DOC
+      end
+
+      def infer_http_verb(verb)
+        VERBS[verb]
+      end
     end
   end
 end
