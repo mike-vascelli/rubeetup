@@ -9,8 +9,7 @@ require 'rubeetup/request_response'
 module Rubeetup
 
   def self.setup(args)
-    auth_options = get_auth_data(args)
-    agent.new(auth_options)
+    agent.new(get_auth_data(args))
   end
 
   # Include this call in a new file: config/initializers/rubeetup.rb
@@ -18,6 +17,9 @@ module Rubeetup
   def self.set_default_auth(args)
     @auth_options = args
   end
+
+
+  private
 
   def self.agent
     @agent = Requester

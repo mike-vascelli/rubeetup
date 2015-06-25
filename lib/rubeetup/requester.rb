@@ -16,17 +16,20 @@ module Rubeetup
       validate_auth
     end
 
-    def validate_auth
-      raise InvalidAuthenticationError, 'Must respond to #merge' unless auth.respond_to? :merge
-      raise InvalidAuthenticationError, "Requires ---> {key: /[^\s]+/}" unless
-        (val = auth[:key]) && present?(val)
-    end
-
     def method_missing(name, *args)
       merge_auth(args)
       # This operation will raise an error if request does not exist, or if args are missing
       request = request_builder.compose_request(name, args)
       request.execute
+    end
+
+
+    private
+
+    def validate_auth
+      raise InvalidAuthenticationError, 'Must respond to #merge' unless auth.respond_to? :merge
+      raise InvalidAuthenticationError, "Requires ---> {key: /[^\s]+/}" unless
+          (val = auth[:key]) && present?(val)
     end
 
     def merge_auth(args)

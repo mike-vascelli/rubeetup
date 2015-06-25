@@ -20,7 +20,7 @@ module Rubeetup
     private
 
     def fetch(request)
-      http.send_request(request.http_verb.upcase, request.method_path, options)
+      http.send_request(request.http_verb.upcase, request.method_path, request.options)
     end
   end
 end

@@ -3,8 +3,6 @@ require 'utilities'
 module Rubeetup
   module MeetupCatalog
 
-    class CatalogError < StandardError; end
-
     include Utilities
 
     # name is a symbol
@@ -27,7 +25,8 @@ module Rubeetup
 
     def self.requests
       @requests = {
-        get_events: {path: lambda {|options| "/2/events?#{stringify(options)}"}, options: [:event_id, :group_domain, :group_id, :group_urlname, :member_id, :rsvp, :venue_id]}
+        get_events: {path: lambda {|options| "/2/events?#{stringify(options)}"},
+                     options: [:event_id, :group_domain, :group_id, :group_urlname, :member_id, :rsvp, :venue_id]}
 
 
 
