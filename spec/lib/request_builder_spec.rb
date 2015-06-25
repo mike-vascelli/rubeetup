@@ -10,13 +10,4 @@ describe Rubeetup::RequestBuilder do
     end
   end
 
-  #private method
-  describe '#split' do
-    context 'with invalid input name(missing underscore)' do
-      it 'returns [nil, nil]' do
-        result = builder.split(:getevents)
-        expect(result == [nil, nil]).to be true
-      end
-    end
-  end
 end

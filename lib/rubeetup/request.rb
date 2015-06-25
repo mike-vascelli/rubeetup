@@ -1,17 +1,19 @@
+require 'meetup_catalog'
+
 module Rubeetup
   class Request
 
-    attr_reader :verb, :method, :options, :api_version, :sender
+    include MeetupCatalog
+
+    attr_reader :http_verb, :method_path, :options, :api_version, :sender
 
     def initialize(args = {})
-      # FIRST VALIDATE THEN ASSIGN TO INSTANCES
-      # USE A LAMBDA fOR EACH OPERATION AND A BIG HASH CONTAINING ALL THE KEYS BUT ENCODE THEM FIRST eg. createvenue: dfsdfsdfsfdf
-      @verb = args[:verb]
-      @method = args[:method]
+      validate_request!(args)
+      @http_verb = args[:http_verb]
       @options = args[:options]
-      @api_version = args[:version] || 2
+      @method_path = request_path!.call(@options)
+      @api_version = args[:version] || 2 # reflect on this one
       @sender = RequestSender.new
-      validate_request!
     end
 
     def execute!
@@ -21,30 +23,33 @@ module Rubeetup
 
     private
 
-    VERBS = [:create, :get, :edit, :delete]
-
-    def validate_request!
-      validate_verb!
-      #validate the rest
+    def validate_request!(args)
+      verify_existence!(args[:name])
+      validate_options!(args[:options])
     end
 
-    def validate_verb!
-      unless VERBS.include? verb
-        message = <<-END.gsub(/ {10}/, '')
-          '#{verb}' is an invalid method.
-          The only available requests must begin with any of: #{VERBS.join(', ')}
-        END
+    def verify_existence!(name)
+      unless find_in_catalog!(name)
+        message = <<-DOC.gsub(/ {10}/, '')
+          '#{name}' is an invalid request.
+          This request does not exist in the catalog of supported requests.
+          Please consult the catalog or the provided documentation for the \
+          complete list of requests.
+        DOC
         raise RequestError, message
       end
     end
 
-    def infer_http_verb(verb)
-      case verb
-        when :delete then :delete
-        when :get then :get
-        when :edit then :post
-        when :create then :post
-        else :invalid
+    def validate_options!(options)
+      required_keys = required_options!
+      unless options.keys.any? {|key| required_keys.include? key}
+        message = <<-DOC.gsub(/ {10}/, '')
+          '#{options.inspect}' does not include the required parameters.
+          This request cannot be completed as is.
+          Please consult the catalog or the provided documentation for the \
+          complete list of requests, and their respective required parameters.
+        DOC
+        raise RequestError, message
       end
     end
   end

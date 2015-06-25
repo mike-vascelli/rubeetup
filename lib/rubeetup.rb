@@ -4,6 +4,7 @@ require 'rubeetup/errors'
 require 'rubeetup/request_builder'
 require 'rubeetup/request'
 require 'rubeetup/request_sender'
+require 'rubeetup/request_response'
 
 module Rubeetup
 
