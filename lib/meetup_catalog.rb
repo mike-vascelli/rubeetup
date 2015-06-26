@@ -19,11 +19,11 @@ module Rubeetup
       @request_entry[:path]
     end
 
-    private
-
     def self.error_message(object)
-      "Cannot find #{object}. Must first call: \
-        MeetupCatalog#find_in_catalog('name')"
+      <<-DOC.gsub(/^ {8}/)
+        Cannot find #{object}. Must first call:
+        MeetupCatalog#find_in_catalog('name')
+      DOC
     end
 
     def self.requests

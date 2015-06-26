@@ -3,22 +3,26 @@ require 'net/http'
 
 module Rubeetup
   class RequestResponse
+    attr_reader :response
+
     def initialize(raw_data)
-      fail MeetupResponseError, self.class.send(:error_message, raw_data) unless
-          raw_data.is_a? Net::HTTPSuccess
+      @response = raw_data
       @data = JSON.parse(raw_data.body, symbolize_names: true)
     end
 
     def data
+      fail MeetupResponseError.new(self), error_message unless
+        response.is_a? Net::HTTPSuccess
       @data[:results] || [@data]
     end
 
-    class << self
-      private
+    private
 
-      def error_message(data)
-        "something wrong with response from Meetup: #{data.body}"
-      end
+    def error_message
+      <<-DOC.gsub(/^ {8}/, '')
+        An error was encountered while processing your request:
+        #{@data}
+      DOC
     end
   end
 end
