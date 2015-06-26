@@ -27,29 +27,31 @@ module Rubeetup
     end
 
     def verify_existence(name)
-      fail RequestError, existence_message(name) unless find_in_catalog(name)
+      fail RequestError, self.class.send(:existence_message, name) unless
+        find_in_catalog(name)
     end
 
     def validate_options(options)
       required_keys = required_options
-      fail RequestError, options_message(options) unless
+      fail RequestError, self.class.send(:options_message, options) unless
         options.keys.any? { |key| required_keys.include? key }
     end
 
     def self.existence_message(name)
       <<-DOC.gsub(/^ {8}/, '')
-        '#{name}' is an invalid request.
+        The provided request => '#{name}' is an invalid request.
         This request does not exist in the catalog of supported requests.
-        Please consult the catalog or the provided documentation for the \
+        Please consult the catalog or the provided documentation for the
         complete list of requests.
       DOC
     end
 
     def self.options_message(options)
       <<-DOC.gsub(/^ {8}/, '')
-        '#{options.inspect}' does not include the required parameters.
+        The provided data => '#{options.inspect}' is missing one or more
+        required parameters.
         This request cannot be completed as is.
-        Please consult the catalog or the provided documentation for the \
+        Please consult the catalog or the provided documentation for the
         complete list of requests, and their respective required parameters.
       DOC
     end

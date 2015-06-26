@@ -7,7 +7,7 @@ require 'rubeetup/request_sender'
 require 'rubeetup/request_response'
 
 module Rubeetup
-  def self.setup(args)
+  def self.setup(args = nil)
     agent.new(get_auth_data(args))
   end
 
@@ -17,15 +17,17 @@ module Rubeetup
     @auth_options = args
   end
 
-  private
+  class << self
+    private
 
-  def self.agent
-    @agent = Requester
-  end
+    def agent
+      @agent = Requester
+    end
 
-  # Trivial version
-  # TO DO: Should be modified to allow for tokens as well
-  def self.get_auth_data(args)
-    args || @auth_options
+    # Trivial version
+    # TO DO: Should be modified to allow for tokens as well
+    def get_auth_data(args = nil)
+      args || @auth_options
+    end
   end
 end

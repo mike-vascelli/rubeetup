@@ -1,40 +1,44 @@
 require 'spec_helper'
 
+def klass
+  Rubeetup::Requester
+end
+
 describe Rubeetup do
 
   describe '.setup' do
-    it 'creates a Requester' do
-      #allow(Rubeetup).to receive(:get_auth_data).and_return(double)
-      expect(Rubeetup.setup({key: '123'})).to be_an_instance_of(Rubeetup::Requester)
-    end
-  end
+    let(:default_args) {{key: '12345'}}
+    let(:args) {{key: '343434343'}}
 
-  # Simple version
-  # This method should eventually be modified to allow for tokens as well
-  describe '#get_auth_data' do
-    context 'with default auth data' do
-      it 'returns the default authentication data received by the user' do
-        default_args = {key: '12345'}
+    before(:each) do
+      Rubeetup.default_auth(nil)
+    end
+
+    it 'creates a Requester' do
+      expect(Rubeetup.setup(args)).to be_an_instance_of(klass)
+    end
+
+    context 'with only default auth data' do
+      it 'uses the default authentication data received by the user' do
         Rubeetup.default_auth(default_args)
-        expect(Rubeetup.get_auth_data(default_args)).to eq(default_args)
+        expect(klass).to receive(:new).with(default_args)
+        Rubeetup.setup
       end
     end
 
-    context 'with new auth data' do
-      it 'returns the new authentication data received by the user' do
-        args = {key: '12345'}
-        expect(Rubeetup.get_auth_data(args)).to eq(args)
+    context 'with only new auth data' do
+      it 'uses the new authentication data received by the user' do
+        expect(klass).to receive(:new).with(args)
+        Rubeetup.setup(args)
       end
     end
 
     context 'with default and new auth data' do
-      it 'returns the new authentication data received by the user' do
-        default_args = {key: '12345'}
-        args = {key: '12345'}
+      it 'uses the new authentication data received by the user' do
         Rubeetup.default_auth(default_args)
-        expect(Rubeetup.get_auth_data(args)).to eq(args)
+        expect(klass).to receive(:new).with(args)
+        Rubeetup.setup(args)
       end
     end
   end
-
 end

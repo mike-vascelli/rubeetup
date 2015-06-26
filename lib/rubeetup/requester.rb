@@ -33,9 +33,10 @@ module Rubeetup
         (val = auth[:key]) && present?(val)
     end
 
+    # Operates on the memory referenced by args
     def merge_auth(args)
       first_arg = args[0]
-      args[0] = first_arg.respond_to?(:merge) ? first_arg.merge(auth) : auth
+      args[0] = first_arg.respond_to?(:merge) ? auth.merge(first_arg) : auth
     end
   end
 end
