@@ -10,12 +10,12 @@ module Rubeetup
     end
 
     def required_options
-      @request_entry || (fail CatalogError, self.class.error_message('options'))
+      @request_entry || (fail CatalogError, MeetupCatalog.error_message('options'))
       @request_entry[:options]
     end
 
     def request_path
-      @request_entry || (fail CatalogError, self.class.error_message('path'))
+      @request_entry || (fail CatalogError, MeetupCatalog.error_message('path'))
       @request_entry[:path]
     end
 

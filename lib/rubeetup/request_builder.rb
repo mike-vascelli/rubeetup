@@ -8,7 +8,6 @@ module Rubeetup
 
     def compose_request(name, args)
       klass = self.class
-      # NOTE: Not sure if I like this private class method crap...
       verb = klass.send(:get_verb, name)
       klass.send(:validate_verb, verb)
       request.new(

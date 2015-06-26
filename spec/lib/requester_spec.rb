@@ -1,31 +1,34 @@
 require 'spec_helper'
 
 describe Rubeetup::Requester do
+  let(:klass) { Rubeetup::Requester }
 
   describe '#initialize' do
     context 'with valid auth data' do
       it 'does nothing' do
-        expect{Rubeetup::Requester.new(key: '1234')}.not_to raise_error
+        expect{klass.new(key: '1234')}.not_to raise_error
       end
     end
 
     context 'with invalid auth data' do
       context '(non-Hash-behaving auth data)' do
         it 'raises InvalidAuthenticationError' do
-          expect{Rubeetup::Requester.new('54545')}.to raise_error(Rubeetup::InvalidAuthenticationError)
+          expect{klass.new('54545')}
+              .to raise_error(Rubeetup::InvalidAuthenticationError)
         end
       end
 
       context '(Hash missing :key)' do
         it 'raises InvalidAuthenticationError' do
-          expect{Rubeetup::Requester.new(keyyy: 'val')}.to raise_error(Rubeetup::InvalidAuthenticationError)
+          expect{klass.new(keyyy: 'val')}
+              .to raise_error(Rubeetup::InvalidAuthenticationError)
         end
       end
     end
   end
 
   describe 'handling requests' do
-    let(:agent) {Rubeetup::Requester.new(key: 'val')}
+    let(:agent) {klass.new(key: 'val')}
     let(:request) {instance_double('Request', execute: nil)}
 
     before(:each) do
@@ -42,5 +45,4 @@ describe Rubeetup::Requester do
       agent.get_events
     end
   end
-
 end
