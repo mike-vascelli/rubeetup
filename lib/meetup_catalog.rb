@@ -1,30 +1,38 @@
 require 'utilities'
 
 module Rubeetup
+  # NOTE: This module expects to be mixed in to a class which implements
+  # the instance method 'name'.
   module MeetupCatalog
     extend Utilities
 
-    # name is a symbol
-    def find_in_catalog(name)
-      @request_entry = MeetupCatalog.requests[name]
+    def is_in_catalog?
+      catalog[name]
     end
 
     def required_options
-      @request_entry || (fail CatalogError, MeetupCatalog.error_message('options'))
-      @request_entry[:options]
+      catalog[name][:options] || cry('options')
     end
 
     def request_path
-      @request_entry || (fail CatalogError, MeetupCatalog.error_message('path'))
-      @request_entry[:path]
+      catalog[name][:path] || cry('path')
     end
 
-    def self.error_message(object)
-      <<-DOC.gsub(/^ {8}/)
-        Cannot find #{object}. Must first call:
-        MeetupCatalog#find_in_catalog('name')
-      DOC
+    private
+
+    def catalog
+      @data ||= MeetupCatalog.requests
     end
+
+    def cry(why)
+      raise CatalogError, error_message(why)
+    end
+
+    def error_message(object)
+      "Cannot find '#{object}' for the '#{name}' request."
+    end
+
+    # private module method
 
     def self.requests
       {

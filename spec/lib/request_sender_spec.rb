@@ -1,6 +1,15 @@
 require 'spec_helper'
 
 describe Rubeetup::RequestSender do
-
-
+  describe '#get_response' do
+    it 'delegates the job to a dependency injected into #response' do
+      sender = Rubeetup::RequestSender.new
+      dependency = sender.response
+      dependency_instance = double
+      allow(dependency).to receive(:new).and_return(dependency_instance)
+      allow(sender).to receive(:fetch)
+      expect(dependency_instance).to receive(:data)
+      sender.get_response(nil)
+    end
+  end
 end

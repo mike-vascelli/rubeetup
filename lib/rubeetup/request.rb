@@ -4,12 +4,13 @@ module Rubeetup
   class Request
     include MeetupCatalog
 
-    attr_reader :http_verb, :method_path, :options, :api_version, :sender
+    attr_reader :name, :http_verb, :method_path, :options, :api_version, :sender
 
     def initialize(args = {})
-      validate_request(args)
-      @http_verb = args[:http_verb]
+      @name = args[:name]
       @options = args[:options]
+      validate_request
+      @http_verb = args[:http_verb]
       @method_path = request_path.call(@options)
       @api_version = args[:version] || 2 # reflect on this one
       @sender = RequestSender.new
@@ -21,23 +22,25 @@ module Rubeetup
 
     private
 
-    def validate_request(args)
-      verify_existence(args[:name])
-      validate_options(args[:options])
+    def validate_request
+      verify_existence
+      validate_options
     end
 
-    def verify_existence(name)
-      fail RequestError, self.class.send(:existence_message, name) unless
-        find_in_catalog(name)
+    def verify_existence
+      fail RequestError, existence_message unless is_in_catalog?
     end
 
-    def validate_options(options)
+    def validate_options
+      fail RequestError, options_message unless has_required_options?
+    end
+
+    def has_required_options?
       required_keys = required_options
-      fail RequestError, self.class.send(:options_message, options) unless
-        options.keys.any? { |key| required_keys.include? key }
+      options.keys.any? { |key| required_keys.include? key }
     end
 
-    def self.existence_message(name)
+    def existence_message
       <<-DOC.gsub(/^ {8}/, '')
         The provided request => '#{name}' is an invalid request.
         This request does not exist in the catalog of supported requests.
@@ -46,7 +49,7 @@ module Rubeetup
       DOC
     end
 
-    def self.options_message(options)
+    def options_message
       <<-DOC.gsub(/^ {8}/, '')
         The provided data => '#{options.inspect}' is missing one or more
         required parameters.
@@ -55,7 +58,5 @@ module Rubeetup
         complete list of requests, and their respective required parameters.
       DOC
     end
-
-    private_class_method :existence_message, :options_message
   end
 end
