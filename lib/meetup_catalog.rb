@@ -27,7 +27,7 @@ module Rubeetup
     end
 
     def self.requests
-      @requests = {
+      {
         get_events: { path: ->(options) { "/2/events?#{stringify(options)}" },
                       options: [:event_id, :group_domain, :group_id,
                                 :group_urlname, :member_id, :rsvp, :venue_id] }
