@@ -1,4 +1,5 @@
 require 'meetup_catalog'
+require 'set'
 
 module Rubeetup
   class Request
@@ -32,12 +33,16 @@ module Rubeetup
     end
 
     def validate_options
-      fail RequestError, options_message unless has_required_options?
+      fail RequestError, options_message unless has_all_required_options?
     end
 
-    def has_required_options?
-      required_keys = required_options
-      options.keys.any? { |key| required_keys.include? key }
+    def has_all_required_options?
+      required_keys_sets = required_options.map do |elem|
+        elem.respond_to?(:to_set) ? elem.to_set : Set[elem]
+      end
+      return true if required_keys_sets.empty?
+      option_keys_set = options.keys.to_set
+      required_keys_sets.any? { |set| set.subset? option_keys_set }
     end
 
     def existence_message
