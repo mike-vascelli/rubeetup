@@ -11,28 +11,18 @@ module Rubeetup
     end
 
     def required_options
-      catalog[name][:options] || cry('options')
+      catalog[name][:options]
     end
 
     def request_path
-      catalog[name][:path] || cry('path')
+      catalog[name][:path]
     end
 
     private
 
     def catalog
-      @data ||= MeetupCatalog.requests
+      @data ||= Rubeetup::MeetupCatalog.send(:requests)
     end
-
-    def cry(why)
-      raise CatalogError, error_message(why)
-    end
-
-    def error_message(object)
-      "Cannot find '#{object}' for the '#{name}' request."
-    end
-
-    # private module method
 
     def self.requests
       {
@@ -41,5 +31,7 @@ module Rubeetup
                                 :group_urlname, :member_id, :rsvp, :venue_id] }
       }
     end
+
+    private_class_method :requests
   end
 end
