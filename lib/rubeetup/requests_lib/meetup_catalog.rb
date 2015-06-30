@@ -1,9 +1,17 @@
 module Rubeetup
+  ##
+  # Concrete implementation of a catalog
+  # @note it respects the interface demanded by Rubeetup::RequestCatalog, and
+  #   as such, it provides a module method +.requests+, and for each entry in the
+  #   catalog there exists a Hash which can respond to +[:options]+ and +[:path]+
+  #
   module MeetupCatalog
     extend Rubeetup::Utilities
 
+    ##
+    # @return [Hash{Symbol=>Hash{Symbol=>Lambda, Symbol=>Array<Symbol>}}]
+    #
     def self.requests
-      #byebug
       {
         get_open_events: { path: ->(options) { "/2/open_events?#{stringify(options)}" },
                            options: [:category, :city, :country, :lat, :lon, :state,

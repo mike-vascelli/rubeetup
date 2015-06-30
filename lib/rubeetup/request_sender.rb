@@ -1,20 +1,39 @@
 require 'net/http'
 
 module Rubeetup
+  ##
+  # Responsible for sending responses over an http connection
+  #
   class RequestSender
-    include Utilities
+    include Rubeetup::Utilities
 
+    ##
+    # Destination host
+    #
     HOST = 'api.meetup.com'
 
-    attr_reader :http, :response_wrapper
+    ##
+    # @return [Net::HTTP] this Sender's http connection
+    #
+    attr_reader :http
+
+    ##
+    # @return [Symbol] this Sender's chosen request type
+    #
+    attr_reader :response_type
 
     def initialize
       @http = Net::HTTP.new(HOST)
-      @response_wrapper = RequestResponse
+      @response_type = Rubeetup::RequestResponse
     end
 
+    ##
+    # Performs a request and returns back the response
+    # @param [Rubeetup::Request] request the request instance to be sent
+    # @return [Array<Rubeetup::ResponseWrapper>] the request response
+    #
     def get_response(request)
-      response_wrapper.new(fetch(request)).data
+      response_type.new(fetch(request)).data
     end
 
     private

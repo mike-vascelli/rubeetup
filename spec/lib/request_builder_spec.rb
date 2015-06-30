@@ -1,11 +1,12 @@
 require 'spec_helper'
 
 describe Rubeetup::RequestBuilder do
-  let(:builder) { Rubeetup::RequestBuilder.new }
+  let(:builder) { Rubeetup::RequestBuilder }
 
   describe '#compose_request' do
     it 'creates a request instance' do
-      expect(builder.request).to receive(:new)
+      request_type = builder.send(:request_type)
+      expect(request_type).to receive(:new)
       builder.compose_request(:get_events, [])
     end
 
