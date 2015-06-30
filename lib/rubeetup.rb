@@ -8,7 +8,7 @@ require 'rubeetup/request'
 require 'rubeetup/request_sender'
 require 'rubeetup/request_response'
 ###################
-require 'byebug'
+#require 'byebug'
 ###################
 
 module Rubeetup
