@@ -1,9 +1,8 @@
-require 'meetup_catalog'
 require 'set'
 
 module Rubeetup
   class Request
-    include MeetupCatalog
+    include RequestsCatalog
 
     attr_reader :name, :http_verb, :method_path, :options, :api_version, :sender
 
@@ -19,6 +18,16 @@ module Rubeetup
 
     def execute
       sender.get_response(self)
+    end
+
+    def to_s
+      <<-DOC.gsub(/^ {8}/, '')
+        REQUEST
+        name => #{name}
+        verb => #{http_verb}
+        path => #{method_path}
+        options => #{options.inspect}
+      DOC
     end
 
     private
@@ -56,7 +65,7 @@ module Rubeetup
 
     def options_message
       <<-DOC.gsub(/^ {8}/, '')
-        The provided data => '#{options.inspect}' is missing one or more
+        The provided arguments => '#{options.inspect}' miss one or more
         required parameters.
         This request cannot be completed as is.
         Please consult the catalog or the provided documentation for the

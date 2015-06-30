@@ -3,25 +3,23 @@ require 'spec_helper'
 describe Rubeetup::RequestResponse do
   describe '#data' do
     before(:each) do
-
+      @raw_data = double(body: '')
     end
 
     context 'for an unsuccessful response' do
       it 'raises a MeetupResponseError' do
-        data = double(body: '')
-        allow(data).to receive(:is_a?).with(Net::HTTPSuccess).and_return(false)
-        allow(JSON).to receive(:parse).and_return({})
-        response = Rubeetup::RequestResponse.new(data)
+        parsed_body = double(:[] => {})
+        allow(JSON).to receive(:parse).and_return(parsed_body)
+        response = Rubeetup::RequestResponse.new(@raw_data)
         expect{ response.data }.to raise_error(Rubeetup::MeetupResponseError)
       end
     end
 
     context 'for a successful response' do
       def test_body(payload)
-        data = double(body: '')
-        allow(data).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
+        allow(@raw_data).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
         allow(JSON).to receive(:parse).and_return(payload)
-        response = Rubeetup::RequestResponse.new(data)
+        response = Rubeetup::RequestResponse.new(@raw_data)
         expect(response.data).to be_an(Array)
       end
 

@@ -1,5 +1,3 @@
-require 'utilities'
-
 module Rubeetup
   class Requester
     include Utilities
@@ -35,8 +33,8 @@ module Rubeetup
 
     # Operates on the memory referenced by args
     def merge_auth(args)
-      first_arg = args[0]
-      args[0] = first_arg.respond_to?(:merge) ? auth.merge(first_arg) : auth
+      options = args[0]
+      args[0] = options.respond_to?(:merge) ? auth.merge(options) : auth
     end
   end
 end

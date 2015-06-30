@@ -1,5 +1,4 @@
 require 'net/http'
-require 'utilities'
 
 module Rubeetup
   class RequestSender
@@ -7,15 +6,15 @@ module Rubeetup
 
     HOST = 'api.meetup.com'
 
-    attr_reader :http, :response
+    attr_reader :http, :response_wrapper
 
     def initialize
       @http = Net::HTTP.new(HOST)
-      @response = RequestResponse
+      @response_wrapper = RequestResponse
     end
 
     def get_response(request)
-      response.new(fetch(request)).data
+      response_wrapper.new(fetch(request)).data
     end
 
     private
