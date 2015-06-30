@@ -9,6 +9,8 @@ module Rubeetup
     extend Rubeetup::Utilities
 
     ##
+    # Returns a Hash including all the supported requests. Each entry in the hash
+    # corresponds to a request, and it specifies both its +path+, and its <tt>required options</tt>.
     # @return [Hash{Symbol=>Hash{Symbol=>Lambda, Symbol=>Array<Symbol>}}]
     #
     def self.requests

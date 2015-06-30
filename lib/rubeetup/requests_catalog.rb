@@ -17,14 +17,18 @@ module Rubeetup
     end
 
     ##
+    # Reads the +name+ entry in the catalog and then gets its required parameters
     # @note this module expects a concrete catalog whose entries can respond to +[:options]+
+    # @return [Array<Symbol>] the list of all the required parameters
     #
     def required_options
       catalog[name][:options]
     end
 
     ##
+    # Reads the +name+ entry in the catalog and then gets its lambda to compute the request's path
     # @note this module expects a concrete catalog whose entries can respond to +[:path]+
+    # @return [Lambda] the lambda expression to compute the path for the request
     #
     def request_path
       catalog[name][:path]

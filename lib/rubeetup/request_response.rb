@@ -18,7 +18,7 @@ module Rubeetup
     attr_reader :parsed_body
 
     ##
-    # @return [Net::HTTPResponse] response the raw response from the sender
+    # @param [Net::HTTPResponse] raw_data the raw response from the sender
     #
     def initialize(raw_data)
       @response = raw_data
@@ -66,6 +66,9 @@ module Rubeetup
   # RequestResponse's attributes access.
   #
   class ResponseWrapper
+    ##
+    # @param [Hash{Symbol=> ...}] data hash of response data
+    #
     def initialize(data)
       @hash = data
     end
