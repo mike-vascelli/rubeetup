@@ -130,7 +130,7 @@ To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## Contributing
 
-Bug reports and are welcome on GitHub at https://github.com/mike-vascelli/rubeetup/issues.
+Bug reports are welcome! Here's the link: https://github.com/mike-vascelli/rubeetup/issues.
 
 
 ## License

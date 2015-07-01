@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Mike Vascelli']
   spec.email         = ['michele.vascelli@gmail.com']
 
-  spec.summary       = 'Client library to the Meetup.com API'
+  spec.summary       = 'Ruby client library to the Meetup.com API'
   spec.description   = "A comprehensive and easily extensible Ruby library \
                        which simplifies interaction with the Meetup.com API"
   spec.homepage      = 'https://github.com/mike-vascelli/rubeetup'

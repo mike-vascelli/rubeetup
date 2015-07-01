@@ -7,6 +7,7 @@ require 'rubeetup/request_builder'
 require 'rubeetup/request'
 require 'rubeetup/request_sender'
 require 'rubeetup/request_response'
+require 'rubeetup/response_wrapper'
 
 ##
 # @author Mike Vascelli <michele.vascelli@gmail.com>
