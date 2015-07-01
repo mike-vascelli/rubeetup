@@ -1,5 +1,6 @@
 <a href="https://travis-ci.org/mike-vascelli/rubeetup"><img src="https://travis-ci.org/mike-vascelli/rubeetup.svg?branch=master"/></a>
 <a href="https://codeclimate.com/github/mike-vascelli/rubeetup"><img src="https://codeclimate.com/github/mike-vascelli/rubeetup/badges/gpa.svg" /></a>
+<a href='https://gemnasium.com/mike-vascelli/rubeetup'><img src="https://gemnasium.com/mike-vascelli/rubeetup.svg" alt="Dependency Status" /></a>
 <a href='https://coveralls.io/r/mike-vascelli/rubeetup'><img src='https://coveralls.io/repos/mike-vascelli/rubeetup/badge.svg' alt='Coverage Status' /></a>
 <a href="https://inch-ci.org/github/mike-vascelli/rubeetup"><img src="http://inch-ci.org/github/mike-vascelli/rubeetup.svg?branch=master"/></a>
 
@@ -8,7 +9,7 @@
 
 ## Overview
 
-This gem allows you to interact with the `Meetup.com` API in a simple and direct way. It gives you access to all of the available API methods (full +CRUD+), and it also makes sure that all the required parameters are provided with each request.
+This gem allows you to interact with the `Meetup.com` API in a simple and direct way. It gives you access to all of the available API methods (full `CRUD`), and it also makes sure that all the required parameters are provided with each request.
 
 For more information on the Meetup API itself, visit: http://www.meetup.com/meetup_api
 
@@ -27,11 +28,11 @@ They begin with the action to perform on a resource: (i.e. `create`, `get`, `edi
 
 
 
-Check out the names of the supported requests, and their respective required arguments in +rubeetup/requests_lib/meetup_catalog.rb+, in the MeetupCatalog documentation, or at: http://www.meetup.com/meetup_api/
+Check out the names of the supported requests, and their respective required arguments in `rubeetup/requests_lib/meetup_catalog.rb`, in the MeetupCatalog documentation, or at: http://www.meetup.com/meetup_api
 
 ### Authorization
 Rubeetup will need a Meetup api key to successfully perform the requests. This can be obtained by signing-up at http://www.meetup.com, and by requesting a key for your account.
-Note that in order to +edit+, +create+, or +delete+ any resource in the API, you must first obtain the privileges to do those actions. This usually means becoming an organizer for a group. This can be achieved by either starting# a meetup group, or by being granted the authorization by a current organizer# of a group.# If you want to experiment with the API or simply do some live testing, then you can# request to become an organizer for the <tt>Meetup API Testing Sandbox Group</tt>.
+Note that in order to `edit`, `create`, or `delete` any resource in the API, you must first obtain the privileges to do those actions. This usually means becoming an organizer for a group. This can be achieved by either starting a meetup group, or by being granted the authorization by a current organizer of a group. If you want to experiment with the API or simply do some live testing, then you can request to become an organizer for the <tt>Meetup API Testing Sandbox Group</tt>.
 
 Visit this link http://www.meetup.com/Meetup-API-Testing for more information.
 
@@ -83,11 +84,11 @@ events.each do |event|
 end
 ```
 
- To find out about all the available response attributes visit the Meetup API documentation:
- http://www.meetup.com/meetup_api
+To find out about all the available response attributes visit the Meetup API documentation:
+http://www.meetup.com/meetup_api
 
- For example, for the +events+ API request in the +Usage+ example above, check this link:
- http://www.meetup.com/meetup_api/docs/2/events
+For example, for the `events` API request in the +Usage+ example above, check this link:
+http://www.meetup.com/meetup_api/docs/2/events
 
 
 
@@ -125,11 +126,11 @@ Rubeetup has been tested on the following ruby interpreters:
 
 After checking out the repo, run `bin/setup`, or `bundle install` to install dependencies. Then, run `rake` or `rspec` to run the tests. You can also run `bin/console` or `bundle console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/mike-vascelli/rubeetup. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
+Bug reports and are welcome on GitHub at https://github.com/mike-vascelli/rubeetup/issues.
 
 
 ## License
