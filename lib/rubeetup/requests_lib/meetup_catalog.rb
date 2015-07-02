@@ -1,3 +1,5 @@
+require "net/http/post/multipart"
+
 module Rubeetup
   ##
   # Concrete implementation of a catalog
@@ -180,7 +182,7 @@ module Rubeetup
           #     the multipart form data should be included in the signature base string
           create_group_photo: { path: ->(_) { "/2/group_photo" },
                                 options: [[:group_id, :photo], [:group_urlname, :photo]],
-                                multipart: true},
+                                multipart: ->(options) { options[:photo] = UploadIO.new(options[:photo], 'application/octet-stream') } },
 
 
           get_find_groups: { path: ->(options) { "/find/groups?#{stringify(options)}" },
@@ -229,7 +231,7 @@ module Rubeetup
           #     the multipart form data should be included in the signature base string
           create_member_photo: { path: ->(_) { "/2/member_photo" },
                                  options: [:photo],
-                                 multipart: true },
+                                 multipart: ->(options) { options[:photo] = UploadIO.new(options[:photo], 'application/octet-stream') } },
 
 
 
@@ -289,9 +291,9 @@ module Rubeetup
 
           # @note If authenticating with OAuth, no parameters in
           #     the multipart form data should be included in the signature base string
-          create_event_photo: { path: ->(_) { "/2/photo" },
-                                options: [[:photo, :event_id], [:photo, :photo_album_id]],
-                                multipart: true },
+          create_photo: { path: ->(_) { "/2/photo" },
+                          options: [[:photo, :event_id], [:photo, :photo_album_id]],
+                          multipart: ->(options) { options[:photo] = UploadIO.new(options[:photo], 'application/octet-stream') } },
 
 
           #####################################################################

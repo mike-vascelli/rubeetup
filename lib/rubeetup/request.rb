@@ -33,6 +33,11 @@ module Rubeetup
     attr_reader :sender
 
     ##
+    # @return [Lambda] multipart if present it contains the multipart POST logic
+    #
+    attr_reader :multipart
+
+    ##
     # @param [Hash{Symbol=>String}] args holds the request's data
     # @option args [Symbol] :name the full request's name
     # @option args [Hash{Symbol=>String}] :options holds the request's options
@@ -44,6 +49,7 @@ module Rubeetup
       validate_request
       @http_verb = args[:http_verb]
       @method_path = request_path.call(@options)
+      @multipart = request_multipart
       @sender = Rubeetup::RequestSender.new
     end
 
@@ -101,18 +107,21 @@ module Rubeetup
       <<-DOC.gsub(/^ {8}/, '')
         The provided request => '#{name}' is an invalid request.
         This request does not exist in the catalog of supported requests.
-        Please consult the catalog or the provided documentation for the
-        complete list of requests.
+        Please consult rubeetup/requests_lib/meetup_catalog.rb, or the provided
+        documentation for the complete list of requests.
       DOC
     end
 
     def options_message
       <<-DOC.gsub(/^ {8}/, '')
+        This request cannot be completed as is.
         The provided arguments => '#{options.inspect}' miss one or more
         required parameters.
-        This request cannot be completed as is.
-        Please consult the catalog or the provided documentation for the
-        complete list of requests, and their respective required parameters.
+        The request '#{name}' requires the following parameters:
+        '#{required_options.inspect}'
+        Please consult rubeetup/requests_lib/meetup_catalog.rb, or the provided
+        documentation for the complete list of requests, and their respective
+        required parameters.
       DOC
     end
   end

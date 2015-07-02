@@ -10,6 +10,14 @@ def local_testing
   false
 end
 
+##
+# Gives you the location of the test files
+# @return [String] Directory containing all test files
+#
+def test_files_folder
+  'spec/test_files/'
+end
+
 def api_key
   ENV['MEETUP_KEY'] || testing_apikey
 end

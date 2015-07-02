@@ -1,4 +1,4 @@
-require 'net/http'
+require 'net/http/post/multipart'
 
 module Rubeetup
   ##
@@ -22,8 +22,14 @@ module Rubeetup
     #
     attr_reader :response_type
 
+    ##
+    # @return [Symbol] this Sender's chosen multipart handler
+    #
+    attr_reader :multipart_handler_type
+
     def initialize
       @http = Net::HTTP.new(HOST)
+      @multipart_handler_type = Net::HTTP::Post::Multipart
       @response_type = Rubeetup::RequestResponse
     end
 
@@ -39,13 +45,22 @@ module Rubeetup
     private
 
     def fetch(request)
+      return multipart_post(request) if request.multipart
+      # else proceed with url-encoded
       http.send_request(
         request.http_verb.upcase,
         request.method_path,
-        stringify(request.options)
-      )
+        stringify(request.options))
     end
 
+    def multipart_post(request)
+      encode_resources(request)
+      http.request(multipart_handler_type.new(request.method_path,
+                                              request.options))
+    end
 
+    def encode_resources(request)
+      request.multipart.call(request.options)
+    end
   end
 end

@@ -42,6 +42,15 @@ module Rubeetup
       catalog[name][:path]
     end
 
+    ##
+    # Reads the +name+ entry in the catalog and then gets its POST logic if defined
+    # @note the entry in the concrete catalog may not respond to +:[:multipart]+
+    # @return [Lambda] If defined, it provides the logic to encode for multipart POST
+    #
+    def request_multipart
+      catalog[name][:multipart]
+    end
+
     private
 
     ##

@@ -43,5 +43,10 @@ if api_key || local_testing
       #puts "DONEEEEEEEEEEEEEEEE ONCE"
       #expect{@sender.delete_event(id: "223538018")}.not_to raise_error
     end
+
+    it 'performs photo upload with no errors' do
+      event = @sender.create_event(group_id: testing_group_id, group_urlname: testing_group_urlname, name: 'pic test')
+      expect{@sender.create_photo(event_id: event.first.id, photo: "#{test_files_folder}cat.png")}.not_to raise_error
+    end
   end
 end

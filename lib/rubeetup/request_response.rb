@@ -48,7 +48,8 @@ module Rubeetup
     # Reads the response's body for the URL used in making the request
     #
     def request_url
-      parsed_body[:meta][:url]
+      meta = parsed_body[:meta]
+      meta[:url] if meta
     end
 
     def error_message
