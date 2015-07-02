@@ -10,6 +10,14 @@ module Rubeetup
   #
   module RequestsCatalog
     ##
+    # Gives you the list of all the supported requests
+    # @return [Array<Symbol>] the complete list of supported operations
+    #
+    def supported_requests
+      catalog.keys
+    end
+
+    ##
     # @return [Boolean] whether a +name+ entry exists in the catalog
     #
     def is_in_catalog?
@@ -36,12 +44,21 @@ module Rubeetup
 
     private
 
-    # Could be fitted to take an arg, or even an attribute, to decide which
-    # catalog should be built dynamically...
+    ##
+    # @todo Could be fitted to take an arg, or even an attribute, to decide which
+    #   catalog should be built dynamically...
+    #
     def catalog
       Rubeetup::RequestsCatalog.send(:build_catalog)
     end
 
+    ##
+    # Here we choose the catalog we want to build.
+    # Then we load the catalog into a class instance variable. This should speed up
+    # processing, but may be costly in terms of space.
+    # @todo analyze the situation and decide whether to load the catalog at each
+    #    request
+    #
     def self.build_catalog
       @data ||= Rubeetup::MeetupCatalog.requests
     end
