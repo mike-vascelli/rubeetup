@@ -29,8 +29,7 @@ They begin with the action to perform on a resource: (i.e. `create`, `get`, `edi
 
 ## Supported Requests
 
-:get_open_events, :get_concierge, :get_events, :create_event, :get_event, :edit_event, :delete_event, :get_event_comments, :create_event_comment, :get_event_comment, :delete_event_comment, :create_event_comment_flag, :create_event_comment_subscribe, :delete_event_comment_subscribe, :create_event_comment_like, :delete_event_comment_like, :get_event_comment_likes, :get_event_ratings, :create_event_rating, :create_attendance, :get_attendance, :create_event_payments, :create_watchlist, :delete_watchlist, :get_boards, :get_discussions, :get_discussion_posts, :get_categories, :get_cities, :get_dashboard, :get_activity, :get_groups, :get_comments, :create_group_photo, :get_find_groups, :get_group, :edit_group, :create_group_topics, :delete_group_topics, :get_recommended_groups, :create_recommended_groups_ignores, :get_similar_groups, :get_members, :get_member, :edit_member, :delete_member_photo, :create_member_photo, :get_status, :get_notifications, :create_notifications_read, :get_oembed, :delete_photo, :get_photo_comments, :create_photo_comment, :get_photo_albums, :get_photos, :create_photo_album, :create_photo, :get_profiles, :create_profile, :edit_profile, :get_profile, :delete_profile, :create_member_approvals, :delete_member_approvals, :get_rsvps, :create_rsvp, :edit_rsvp, :get_rsvp, :get_topic_categories, :get_topics, :get_recommended_group_topics, :get_open_venues, :get_venues, :get_group_venues, :get_recommended_venues, :create_venue
-
+get_open_events,   get_concierge,   get_events,   create_event,   get_event,   edit_event,   delete_event,   get_event_comments,   create_event_comment,   get_event_comment,   delete_event_comment,   create_event_comment_flag,   create_event_comment_subscribe,   delete_event_comment_subscribe,   create_event_comment_like,   delete_event_comment_like,   get_event_comment_likes,   get_event_ratings,   create_event_rating,   create_attendance,   get_attendance,   create_event_payments,   create_watchlist,   delete_watchlist,   get_boards,   get_discussions,   get_discussion_posts,   get_categories,   get_cities,   get_dashboard,   get_activity,   get_groups,   get_comments,   create_group_photo,   get_find_groups,   get_group,   edit_group,   create_group_topics,   delete_group_topics,   get_recommended_groups,   create_recommended_groups_ignores,   get_similar_groups,   get_members,   get_member,   edit_member,   delete_member_photo,   create_member_photo,   get_status,   get_notifications,   create_notifications_read,   get_oembed,   delete_photo,   get_photo_comments,   create_photo_comment,   get_photo_albums,   get_photos,   create_photo_album,   create_photo,   get_profiles,   create_profile,   edit_profile,   get_profile,   delete_profile,   create_member_approvals,   delete_member_approvals,   get_rsvps,   create_rsvp,   edit_rsvp,   get_rsvp,   get_topic_categories,   get_topics,   get_recommended_group_topics,   get_open_venues,   get_venues,   get_group_venues,   get_recommended_venues,   create_venue
 
 ### Authorization
 Rubeetup will need a Meetup api key to successfully perform the requests. This can be obtained by signing-up at http://www.meetup.com, and by requesting a key for your account.
@@ -85,7 +84,7 @@ events.each do |event|
   puts venue[:city]
 end
 ```
-To find each requests' own required arguments:
+To check each request's own required parameters:
 Look in `lib/rubeetup/requests_lib/meetup_catalog.json`, or at: http://www.meetup.com/meetup_api
 
 To find out about all the available response attributes visit the Meetup API documentation:
