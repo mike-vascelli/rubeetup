@@ -27,8 +27,10 @@ They begin with the action to perform on a resource: (i.e. `create`, `get`, `edi
     request name:   get_open_events
 
 
+## Supported Requests
 
-Check out the names of the supported requests, and their respective required arguments in `rubeetup/requests_lib/meetup_catalog.rb`, in the MeetupCatalog documentation, or at: http://www.meetup.com/meetup_api
+:get_open_events, :get_concierge, :get_events, :create_event, :get_event, :edit_event, :delete_event, :get_event_comments, :create_event_comment, :get_event_comment, :delete_event_comment, :create_event_comment_flag, :create_event_comment_subscribe, :delete_event_comment_subscribe, :create_event_comment_like, :delete_event_comment_like, :get_event_comment_likes, :get_event_ratings, :create_event_rating, :create_attendance, :get_attendance, :create_event_payments, :create_watchlist, :delete_watchlist, :get_boards, :get_discussions, :get_discussion_posts, :get_categories, :get_cities, :get_dashboard, :get_activity, :get_groups, :get_comments, :create_group_photo, :get_find_groups, :get_group, :edit_group, :create_group_topics, :delete_group_topics, :get_recommended_groups, :create_recommended_groups_ignores, :get_similar_groups, :get_members, :get_member, :edit_member, :delete_member_photo, :create_member_photo, :get_status, :get_notifications, :create_notifications_read, :get_oembed, :delete_photo, :get_photo_comments, :create_photo_comment, :get_photo_albums, :get_photos, :create_photo_album, :create_photo, :get_profiles, :create_profile, :edit_profile, :get_profile, :delete_profile, :create_member_approvals, :delete_member_approvals, :get_rsvps, :create_rsvp, :edit_rsvp, :get_rsvp, :get_topic_categories, :get_topics, :get_recommended_group_topics, :get_open_venues, :get_venues, :get_group_venues, :get_recommended_venues, :create_venue
+
 
 ### Authorization
 Rubeetup will need a Meetup api key to successfully perform the requests. This can be obtained by signing-up at http://www.meetup.com, and by requesting a key for your account.
@@ -83,11 +85,13 @@ events.each do |event|
   puts venue[:city]
 end
 ```
+To find each requests' own required arguments:
+Look in `lib/rubeetup/requests_lib/meetup_catalog.json`, or at: http://www.meetup.com/meetup_api
 
 To find out about all the available response attributes visit the Meetup API documentation:
 http://www.meetup.com/meetup_api
 
-For example, for the `events` API request in the +Usage+ example above, check this link:
+For example, for the `events` API request in the `Usage` example above, check this link:
 http://www.meetup.com/meetup_api/docs/2/events
 
 
@@ -122,6 +126,10 @@ Rubeetup has been tested on the following ruby interpreters:
 - 1.9.3
 - 1.9.2
 
+## Runtime Dependencies
+
+- multipart-post
+
 ## Development
 
 After checking out the repo, run `bin/setup`, or `bundle install` to install dependencies. Then, run `rake` or `rspec` to run the tests. You can also run `bin/console` or `bundle console` for an interactive prompt that will allow you to experiment.
@@ -130,10 +138,30 @@ To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## Contributing
 
-Bug reports are welcome! Here's the link: https://github.com/mike-vascelli/rubeetup/issues.
+Bug reports are more than welcome! Here's the link: https://github.com/mike-vascelli/rubeetup/issues
 
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+The MIT License (MIT)
+
+Copyright (c) 2015 Mike Vascelli
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 

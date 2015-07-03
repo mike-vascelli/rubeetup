@@ -10,14 +10,6 @@ module Rubeetup
   #
   module RequestsCatalog
     ##
-    # Gives you the list of all the supported requests
-    # @return [Array<Symbol>] the complete list of supported operations
-    #
-    def supported_requests
-      catalog.keys
-    end
-
-    ##
     # @return [Boolean] whether a +name+ entry exists in the catalog
     #
     def is_in_catalog?
@@ -51,6 +43,14 @@ module Rubeetup
     def request_multipart
       multi = catalog[name][:multipart]
       eval multi if multi
+    end
+
+    ##
+    # Gives you the list of all the supported requests
+    # @return [Array<Symbol>] the complete list of supported operations
+    #
+    def self.supported_requests
+      build_catalog.keys
     end
 
     private

@@ -1,6 +1,3 @@
-require 'yaml'
-require 'time'
-
 module Rubeetup
   ##
   # Concrete implementation of a catalog
