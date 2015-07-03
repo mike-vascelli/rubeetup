@@ -45,14 +45,6 @@ module Rubeetup
       eval multi if multi
     end
 
-    ##
-    # Gives you the list of all the supported requests
-    # @return [Array<Symbol>] the complete list of supported operations
-    #
-    def self.supported_requests
-      build_catalog.keys
-    end
-
     private
 
     ##
@@ -61,6 +53,14 @@ module Rubeetup
     #
     def catalog
       Rubeetup::RequestsCatalog.send(:build_catalog)
+    end
+
+    ##
+    # Gives you the list of all the supported requests
+    # @return [Array<Symbol>] the complete list of supported operations
+    #
+    def self.supported_requests
+      build_catalog.keys
     end
 
     ##

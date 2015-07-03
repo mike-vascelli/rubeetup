@@ -6,6 +6,8 @@ module Rubeetup
   # Packages a response, and provides for its validation
   #
   class RequestResponse
+    include Rubeetup::Utilities
+
     ##
     # @return [Net::HTTPResponse] response the raw response from the sender
     #
@@ -18,11 +20,18 @@ module Rubeetup
     attr_reader :parsed_body
 
     ##
+    # @return [Rubeetup::Request] the request which caused this response
+    #
+    attr_reader :request
+
+    ##
     # @param [Net::HTTPResponse] raw_data the raw response from the sender
     #
-    def initialize(raw_data)
-      @response = raw_data
-      @parsed_body = JSON.parse(@response.body, symbolize_names: true)
+    def initialize(sender)
+      @response = sender.response_data
+      @request = sender.request
+      body =  @response.body
+      @parsed_body = blank?(body) ? [] : JSON.parse(body, symbolize_names: true)
     end
 
     ##
@@ -33,7 +42,7 @@ module Rubeetup
     def data
       fail Rubeetup::MeetupResponseError.new(self), error_message unless
         response.is_a? Net::HTTPSuccess
-      collection = parsed_body[:results] || [parsed_body]
+      collection = collectionize(parsed_body)
       collection.map {|elem| Rubeetup::ResponseWrapper.new(elem)}
     end
 
@@ -44,18 +53,15 @@ module Rubeetup
 
     private
 
-    ##
-    # Reads the response's body for the URL used in making the request
-    #
-    def request_url
-      meta = parsed_body[:meta]
-      meta[:url] if meta
+    def collectionize(data)
+      return data if data.is_a? Array
+      data[:results] || [data]
     end
 
     def error_message
       <<-DOC.gsub(/^ {8}/, '')
         An error was encountered while processing the following request:
-        #{request_url}
+        #{request}
         Here's some information to describe the error, and/or its causes:
         #{parsed_body}
       DOC

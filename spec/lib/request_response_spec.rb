@@ -4,13 +4,14 @@ describe Rubeetup::RequestResponse do
   describe '#data' do
     before(:each) do
       @raw_data = double(body: '')
+      @sender = double(response_data: @raw_data, request: double(to_s: ''))
     end
 
     context 'for an unsuccessful response' do
       it 'raises a MeetupResponseError' do
         parsed_body = double(:[] => {})
         allow(JSON).to receive(:parse).and_return(parsed_body)
-        response = Rubeetup::RequestResponse.new(@raw_data)
+        response = Rubeetup::RequestResponse.new(@sender)
         expect{ response.data }.to raise_error(Rubeetup::MeetupResponseError)
       end
     end
@@ -19,7 +20,7 @@ describe Rubeetup::RequestResponse do
       def test_body(payload)
         allow(@raw_data).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
         allow(JSON).to receive(:parse).and_return(payload)
-        response = Rubeetup::RequestResponse.new(@raw_data)
+        response = Rubeetup::RequestResponse.new(@sender)
         expect(response.data).to be_an(Array)
       end
 

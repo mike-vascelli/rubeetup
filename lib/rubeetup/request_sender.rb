@@ -27,6 +27,17 @@ module Rubeetup
     #
     attr_reader :multipart_handler_type
 
+    ##
+    # @return [Rubeetup::Request] this Sender's request job
+    #
+    attr_reader :request
+
+    ##
+    # @return [Net::HTTPResponse] the response data obtained from the request
+    #
+    attr_reader :response_data
+
+
     def initialize
       @http = Net::HTTP.new(HOST)
       @multipart_handler_type = Net::HTTP::Post::Multipart
@@ -39,13 +50,15 @@ module Rubeetup
     # @return [Array<Rubeetup::ResponseWrapper>] the request response
     #
     def get_response(request)
-      response_type.new(fetch(request)).data
+      @request = request
+      @response_data = fetch
+      response_type.new(self).data
     end
 
     private
 
-    def fetch(request)
-      return multipart_post(request) if request.multipart
+    def fetch
+      return multipart_post if request.multipart
       # else proceed with url-encoded
       http.send_request(
         request.http_verb.upcase,
@@ -53,13 +66,13 @@ module Rubeetup
         stringify(request.options))
     end
 
-    def multipart_post(request)
-      encode_resources(request)
+    def multipart_post
+      encode_resources
       http.request(multipart_handler_type.new(request.method_path,
                                               request.options))
     end
 
-    def encode_resources(request)
+    def encode_resources
       request.multipart.call(request.options)
     end
   end

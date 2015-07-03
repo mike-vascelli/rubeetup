@@ -73,6 +73,9 @@
     "options": [
       [
         "comment",
+        "event_id"
+      ],
+      [
         "event_id",
         "in_reply_to"
       ]
@@ -166,10 +169,10 @@
     "options": [
       [
         "event_id",
-        "urlname"
-      ],
-      "member",
-      "amount"
+        "urlname",
+        "member",
+        "amount"
+      ]
     ]
   },
   "create_watchlist": {
@@ -311,15 +314,19 @@
   "create_group_topics": {
     "path": "->(options) { \"/#{options[:group_urlname]}/topics\" }",
     "options": [
-      "group_urlname",
-      "topic_id"
+      [
+        "group_urlname",
+        "topic_id"
+      ]
     ]
   },
   "delete_group_topics": {
     "path": "->(options) { \"/#{options[:group_urlname]}/topics\" }",
     "options": [
-      "group_urlname",
-      "topic_id"
+      [
+        "group_urlname",
+        "topic_id"
+      ]
     ]
   },
   "get_recommended_groups": {
@@ -393,7 +400,7 @@
   "create_notifications_read": {
     "path": "->(_) { \"/notifications/read\" }",
     "options": [
-
+      "since_id"
     ]
   },
   "get_oembed": {
@@ -467,7 +474,7 @@
     "multipart": "->(options) { options[:photo] = UploadIO.new(options[:photo], 'application/octet-stream') }"
   },
   "get_profiles": {
-    "path": "->(options) { \"/2/profiles?#{stringify(options)} }",
+    "path": "->(options) { \"/2/profiles?#{stringify(options)}\" }",
     "options": [
       "group_id",
       "group_urlname",
@@ -613,11 +620,13 @@
   "create_venue": {
     "path": "->(options) { \"/#{options[:urlname]}/venues\" }",
     "options": [
-      "address_1",
-      "country",
-      "city",
-      "state",
-      "name"
+      [
+        "address_1",
+        "country",
+        "city",
+        "state",
+        "name"
+      ]
     ]
   }
 }
