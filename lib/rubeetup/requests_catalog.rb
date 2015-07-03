@@ -39,7 +39,8 @@ module Rubeetup
     # @return [Lambda] the lambda expression to compute the path for the request
     #
     def request_path
-      catalog[name][:path]
+      path = catalog[name][:path]
+      eval path if path
     end
 
     ##
@@ -48,7 +49,8 @@ module Rubeetup
     # @return [Lambda] If defined, it provides the logic to encode for multipart POST
     #
     def request_multipart
-      catalog[name][:multipart]
+      multi = catalog[name][:multipart]
+      eval multi if multi
     end
 
     private

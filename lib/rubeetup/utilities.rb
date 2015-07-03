@@ -25,8 +25,26 @@ module Rubeetup
     # @return [String] a sringified representation of a Hash of options
     #
     def stringify(options)
-      return unless options.respond_to? :map
+      return '' unless options.respond_to? :map
       options.map { |key, val| "#{key}=#{val}" if key && val }.compact.join('&')
+    end
+
+    ##
+    # Transforms the strings into a possibly nested collection, into symbols
+    # @note For speed and simplicity no error checking is performed
+    # @param [Array<String, Array...>] array a possibly recursive collection of strings
+    # @return [Array<Symbol, Array...>] a possibly recursive collection of Symbols
+    #
+    def collection_symbolyzer(array)
+      array.map {|elem| elem.is_a?(String) ? elem.to_sym : collection_symbolyzer(elem)}
+    end
+
+    ##
+    # Gives you the dir where all the request catalogs should be stored
+    # @return [String] the directory where you should store request catalogs
+    #
+    def catalog_dir
+      'lib/rubeetup/requests_lib/'
     end
   end
 end

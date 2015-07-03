@@ -6,6 +6,7 @@ module Rubeetup
   #
   class Request
     include Rubeetup::RequestsCatalog
+    include Rubeetup::Utilities
 
     ##
     # @return [Symbol] name the name of the request as input by the user
