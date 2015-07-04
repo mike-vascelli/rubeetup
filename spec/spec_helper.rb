@@ -2,6 +2,8 @@ require 'coveralls'
 Coveralls.wear!
 
 require 'rubeetup'
+require 'vcr'
+require 'time'
 
 ##
 # Determines whether integration testing is local only, or live over the net
@@ -50,4 +52,18 @@ end
 #
 def testing_group_urlname
   'Meetup-API-Testing'
+end
+
+##
+# This sets the interval of time that should pass before VCR re-records all the
+# test files
+#
+def recording_interval
+  (DateTime.now + 7).to_time - DateTime.now.to_time
+end
+
+VCR.configure do |c|
+  c.hook_into :webmock
+  c.cassette_library_dir = 'spec/test_files/cassettes'
+  c.default_cassette_options = {:re_record_interval => recording_interval}
 end

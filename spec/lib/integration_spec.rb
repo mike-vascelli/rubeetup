@@ -1,457 +1,497 @@
 require 'spec_helper'
 
-# the API allows LIMIT requests every TIMESPAN seconds
-TIMESPAN = 10
-LIMIT = 30
+def printer
+  Rubeetup::MeetupCatalog.requests.keys.each do |req|
+    puts <<-DOC.gsub(/^ {6}/, '')
+      it 'correctly handles :#{req}' do
+        VCR.use_cassette('#{req}') do
+          expect{@sender.#{req}()}.not_to raise_error
+        end
+      end
 
-def pause(duration)
-  Thread.sleep(duration)
+    DOC
+  end
 end
-
-def compute_delay(size)
-  size >= LIMIT ? TIMESPAN / size : nil
-end
-
 
 describe Rubeetup do
   before(:all) do
     @sender = Rubeetup.setup(key: api_key)
-    @requests = Rubeetup::MeetupCatalog.requests
   end
 
-  describe 'the :create_profile request'  do
-    it "should rightly fail given that I'm already a member of the testing group" do
-      begin
-        req = :create_profile
-        @requests.delete(req)
-        #@sender.send(req, {group_urlname: testing_group_urlname})
-        #raise "TEST FAILED #{req}"
-      rescue Rubeetup::MeetupResponseError => e
-        expect(e.response.parsed_body[:details]).to eq('already member of group')
-        puts 'COMPLETED ' + req.to_s
-      end
+  it 'correctly handles :get_open_events' do
+    VCR.use_cassette('get_open_events') do
+      #expect{@sender.get_open_events()}.not_to raise_error
+    end
+  end
+=begin
+  it 'correctly handles :get_concierge' do
+    VCR.use_cassette('get_concierge') do
+      expect{@sender.get_concierge()}.not_to raise_error
     end
   end
 
-
-  describe 'requests with no params' do
-    it "performs them with no errors" do
-      selected = @requests.select {|_, val| val[:options].empty?}.keys
-      @requests.delete_if {|key, _| selected.include? key}
-      time = compute_delay(selected.size)
-      #selected.each do |req|
-      #  pause(time) if time
-      #  expect{@sender.send(req)}.not_to raise_error
-      #  puts 'COMPLETED ' + req.to_s
-      #end
+  it 'correctly handles :get_events' do
+    VCR.use_cassette('get_events') do
+      expect{@sender.get_events()}.not_to raise_error
     end
   end
 
-  describe 'requests which take the parameter :group_urlname' do
-    it "performs them with no errors" do
-      selected = @requests.select {|_, val| val[:options].include? :group_urlname}.keys
-      @requests.delete_if {|key, _| selected.include? key}
-      time = compute_delay(selected.size)
-      #selected.each do |req|
-      #  pause(time) if time
-      #  puts 'INIT ' + req.to_s
-      #  expect{@sender.send(req, {group_urlname: testing_group_urlname})}.not_to raise_error
-      #  puts 'COMPLETED ' + req.to_s
-      #end
+  it 'correctly handles :create_event' do
+    VCR.use_cassette('create_event') do
+      expect{@sender.create_event()}.not_to raise_error
     end
   end
 
-
-
-
-  describe 'requests which deal with event comments' do
-    before(:all) do
-      @event = @sender.create_event(group_id: testing_group_id, group_urlname: testing_group_urlname, name: 'test of tests').first
-      @comment = @sender.create_event_comment(event_id: @event.id, comment: 'test').first
-      puts 'COMPLETED :create_event_comment'
-      @requests.delete(:create_event_comment)
-    end
-
-
-
-    ## COMMENT FLAG MUST FAIL BECAUSE I CANNOT FLAG it
-    #  FOR THIS REASON YOU SHOULD PROBABLY REFACTOR THEM OUTSIDE
-    #  {:details=>"Not authorized to flag comment", :code=>"not_authorized", :problem=>"You are not authorized to make that request"}
-    #############################
-    it 'the :create_event_comment_flag request should rightly fail given that meetup does not allow us to flag our own comment' do
-      begin
-        req = :create_event_comment_flag
-        @requests.delete(req)
-        @sender.send(req, {comment_id: @comment.event_comment_id})
-        raise "TEST FAILED #{req}"
-      rescue Rubeetup::MeetupResponseError => e
-        expect(e.response.parsed_body[:details]).to eq('Not authorized to flag comment')
-        puts 'COMPLETED ' + req.to_s
-      end
-    end
-
-
-    # POSSIBLY DELETE WILL FAIL
-
-    #############################################################
-
-
-
-
-
-
-    ## COMMENT SUBSCRIBE MUST FAIL BECAUSE I DON"T HAVE AUTH
-    #  FOR THIS REASON YOU SHOULD PROBABLY REFACTOR THEM OUTSIDE
-    # {:details=>"API requests must be key-signed, oauth-signed, or accompanied by a key: http://www.meetup.com/meetup_api/docs/#authentication", :code=>"not_authorized", :problem=>"You are not authorized to make that request"}    #############################
-    it 'the :delete_event_comment_subscribe request should rightly fail given that meetup does not allow us to unsuscribe our own comment' do
-      begin
-        req = :delete_event_comment_subscribe
-        @requests.delete(req)
-        @sender.send(req, {comment_id: @comment.event_comment_id})
-        raise "TEST FAILED #{req}"
-      rescue Rubeetup::MeetupResponseError => e
-        expect(e.response.parsed_body[:problem]).to eq('You are not authorized to make that request')
-        puts 'COMPLETED ' + req.to_s
-      end
-    end
-
-
-    # CREATE ACTUALLY SUCCEDED!!!!!!
-
-    #######################################
-
-
-
-    ## COMMENT LIKE MUST FAIL BECAUSE I DON"T HAVE AUTH
-    #  FOR THIS REASON YOU SHOULD PROBABLY REFACTOR THEM OUTSIDE
-    # {:details=>"API requests must be key-signed, oauth-signed, or accompanied by a key: http://www.meetup.com/meetup_api/docs/#authentication", :code=>"not_authorized", :problem=>"You are not authorized to make that request"}    #############################
-    it 'the :delete_event_comment_subscribe request should rightly fail given that meetup does not allow us to unsuscribe our own comment' do
-      begin
-        req = :delete_event_comment_like
-        @requests.delete(req)
-        @sender.send(req, {comment_id: @comment.event_comment_id})
-        raise "TEST FAILED #{req}"
-      rescue Rubeetup::MeetupResponseError => e
-        expect(e.response.parsed_body[:problem]).to eq('You are not authorized to make that request')
-        puts 'COMPLETED ' + req.to_s
-      end
-    end
-
-
-    # CREATE ACTUALLY SUCCEDED!!!!!!
-
-    #######################################
-
-
-
-
-    ## COMMENT DELETE MUST FAIL BECAUSE I DON"T HAVE AUTH
-    #  FOR THIS REASON YOU SHOULD PROBABLY REFACTOR THEM OUTSIDE
-    # {:details=>"API requests must be key-signed, oauth-signed, or accompanied by a key: http://www.meetup.com/meetup_api/docs/#authentication", :code=>"not_authorized", :problem=>"You are not authorized to make that request"}    #############################
-    it 'the :delete_event_comment_subscribe request should rightly fail given that meetup does not allow us to unsuscribe our own comment' do
-      begin
-        req = :delete_event_comment
-        @requests.delete(req)
-        @sender.send(req, {id: @comment.event_comment_id})
-        raise "TEST FAILED #{req}"
-      rescue Rubeetup::MeetupResponseError => e
-        expect(e.response.parsed_body[:problem]).to eq('You are not authorized to make that request')
-        puts 'COMPLETED ' + req.to_s
-      end
-    end
-
-
-    # CREATE ACTUALLY SUCCEDED!!!!!!
-
-    #######################################
-
-
-
-
-    it "performs them all with no errors" do
-      expect {
-
-        selected = @requests.select {|_, val| val[:options].any? {|key| (key.to_s =~ /^((?!photo).)*$/) && (key.to_s =~ /comment/)}}.keys
-        @requests.delete_if {|key, _| selected.include? key}
-        time = compute_delay(selected.size)
-        selected.each do |req|
-          pause(time) if time
-          puts 'INIT ' + req.to_s
-          @sender.send(req, {comment_id: @comment.event_comment_id})
-          puts 'COMPLETED ' + req.to_s
-        end
-
-
-        selected = selected = @requests.select {|key, _|  (key.to_s =~ /^((?!photo).)*$/) && (key.to_s =~ /comment/)}.keys
-        @requests.delete_if {|key, _| selected.include? key}
-        time = compute_delay(selected.size)
-        selected.each do |req|
-          pause(time) if time
-          puts 'INIT ' + req.to_s
-          @sender.send(req, {id: @comment.event_comment_id})
-          puts 'COMPLETED ' + req.to_s
-        end
-
-
-
-
-
-      }.not_to raise_error
+  it 'correctly handles :get_event' do
+    VCR.use_cassette('get_event') do
+      expect{@sender.get_event()}.not_to raise_error
     end
   end
 
-
-
-
-
-
-  describe 'requests which deal with events' do
-    before(:all) do
-      @event = @sender.create_event(group_id: testing_group_id, group_urlname: testing_group_urlname, name: 'test of tests').first
-      # puts 'COMPLETED ' + :create_event.to_s
-      @requests.delete(:create_event)
-    end
-
-    it 'performs :get_open_events with no errors' do
-      #expect{@sender.get_open_events(zip: '94608')}.not_to raise_error
-      @requests.delete(:get_open_events)
-      #puts 'COMPLETED ' + :get_open_events.to_s
-    end
-
-    ## THESE TWO ABOUT ATTENDANCE BOTH MUST FAIL BECAUSE THE EVENT HAS TO HAVE STARTED ALREADY
-    #  FOR THIS REASON YOU SHOULD PROBABLY REFACTOR THEM OUTSIDE
-    #############################
-    it 'the :create_attendance request should rightly fail given that the event has not already started' do
-      begin
-        req = :create_attendance
-        @requests.delete(req)
-          #@sender.send(req, {event_id: @event.id, urlname: testing_group_urlname})
-          #raise "TEST FAILED #{req}"
-      rescue Rubeetup::MeetupResponseError => e
-        expect(e.response.parsed_body[:errors][0][:message]).to eq('Event must have started')
-        puts 'COMPLETED ' + req.to_s
-      end
-    end
-
-    it 'the :create_attendance request should rightly fail given that the event has not already started' do
-      begin
-        req = :get_attendance
-        @requests.delete(req)
-          #@sender.send(req, {event_id: @event.id, urlname: testing_group_urlname})
-          # raise "TEST FAILED #{req}"
-      rescue Rubeetup::MeetupResponseError => e
-        expect(e.response.parsed_body[:errors][0][:message]).to eq('Event must have started')
-        puts 'COMPLETED ' + req.to_s
-      end
-    end
-    #######################################
-
-
-    #################################################
-    #################################################
-    #################################################
-    ############# SKIPPING BOTH WATCHLIST OPERATIONS
-    ############ CREATE works BUT DELETE FAILS :errors=>[{:code=>"auth_fail", :message=>"Authentication credentials are required"}]}
-    ######################################################
-    it "JUST DELETING " do
-      @requests.delete(:create_watchlist)
-      @requests.delete(:delete_watchlist)
-    end
-    ##################################################
-    ##################################################
-
-
-    it "performs them all with no errors" do
-      expect {
-
-        selected = @requests.select {|_, val| val[:options].include? :event_id}.keys
-        @requests.delete_if {|key, _| selected.include? key}
-        time = compute_delay(selected.size)
-        #selected.each do |req|
-        #pause(time) if time
-        #puts 'INIT ' + req.to_s
-        #@sender.send(req, {event_id: @event.id})
-        #puts 'COMPLETED ' + req.to_s
-        #end
-
-        selected = @requests.select {|_, val| val[:options].include? [:event_id, :urlname]}.keys
-        @requests.delete_if {|key, _| selected.include? key}
-        time = compute_delay(selected.size)
-        #selected.each do |req|
-        #pause(time) if time
-        #puts 'INIT ' + req.to_s
-        #@sender.send(req, {event_id: @event.id, urlname: testing_group_urlname})
-        #puts 'COMPLETED ' + req.to_s
-        #end
-
-
-
-        ## EVENT DELETE FAILS AND I DON"T KNOW WHAT IS  GOIN ON....
-        #
-        #############################
-          begin
-            req = :delete_event
-            @requests.delete(req)
-            @sender.send(req, {id: @event.id})
-            raise "TEST FAILED #{req}"
-          rescue Rubeetup::MeetupResponseError => e
-            expect(e.response.parsed_body[:problem]).to eq('You are not authorized to make that request')
-            puts 'COMPLETED ' + req.to_s
-          end
-        ###############################################################
-
-
-        ##########  CREATE_EVENT_RATING MUST FAIL BECAUSE YOU CAN ONLY RATE ONCE THE EVENT IS OVER
-        ######     BUT THE MEETUP SERVER ACTUALLY DIES ON IT...
-        expect {
-          req = :create_event_rating
-          @requests.delete(req)
-          @sender.send(req, {event_id: @event.id, rating: 2})
-        }.to raise_error(StandardError)
-          puts 'COMPLETED ' + req.to_s
-
-
-        member_id = '146667802'
-        # CREATE_EVENT_RATING HAS MANY PARAMS
-        req = :create_event_payments
-        @requests.delete(req)
-        @sender.send(req, {event_id: @event.id, urlname: testing_group_urlname, member: member_id, amount: '5'  })
-        puts 'COMPLETED ' + req.to_s
-
-
-
-        selected = selected = @requests.select {|key, _|  (key.to_s =~ /event/)}.keys
-        @requests.delete_if {|key, _| selected.include? key}
-        time = compute_delay(selected.size)
-        selected.each do |req|
-          pause(time) if time
-          puts 'INIT ' + req.to_s
-          @sender.send(req, {id: @event.id})
-          puts 'COMPLETED ' + req.to_s
-        end
-
-
-
-
-      }.not_to raise_error
+  it 'correctly handles :edit_event' do
+    VCR.use_cassette('edit_event') do
+      expect{@sender.edit_event()}.not_to raise_error
     end
   end
 
-
-
-
-
-
-  describe  'requests which involve members' do
-    before(:all) do
-      @event = @sender.create_event(group_id: testing_group_id, group_urlname: testing_group_urlname, name: 'test of tests').first
-      # @note Meetup API does not allow you to create members
-      @member_id = '146667802'
-    end
-
-    #  MEMBER EDIT MUST FAIL BECAUSE IT'S NOT ME
-    # {:details=>"Only the authorized user may edit their own account", :code=>"not_authorized", :problem=>"You are not authorized to make that request"}
-    it 'the :edit_member request should rightly fail given that its me'  do
-      begin
-        req = :edit_member
-        @requests.delete(req)
-        @sender.send(req, {id: @member_id})
-        raise "TEST FAILED #{req}"
-      rescue Rubeetup::MeetupResponseError => e
-        expect(e.response.parsed_body[:problem]).to eq('You are not authorized to make that request')
-        puts 'COMPLETED ' + req.to_s
-      end
-    end
-
-    #  DELETE MEMBER PHOTO MUST FAIL BECAUSE IT'S NOT ME
-    # {:details=>"Only the authorized user may edit their own account", :code=>"not_authorized", :problem=>"You are not authorized to make that request"}
-    it 'the :delete_member_photo request should rightly fail given that its me'  do
-      begin
-        req = :delete_member_photo
-        @requests.delete(req)
-        @sender.send(req, {id: @member_id})
-        raise "TEST FAILED #{req}"
-      rescue Rubeetup::MeetupResponseError => e
-        expect(e.response.parsed_body[:problem]).to eq('You are not authorized to make that request')
-        puts 'COMPLETED ' + req.to_s
-      end
-    end
-
-    #  CREATE MEMBER PHOTO SUCCEEDED
-    it 'the :create_member_photo request succeeds'  do
-        req = :create_member_photo
-        @requests.delete(req)
-        @sender.send(req, {id: @member_id, photo: "#{test_files_folder}cat.png"})
-        puts 'COMPLETED ' + req.to_s
-    end
-
-
-
-    #  CREATE MEMBER APPROVALS FAILS BECAUSE IT'S NOT ME
-    # {:errors=>[{:code=>"permission_error", :message=>"you do not organize this Meetup"}, {:code=>"member_error", :message=>"member is required"}]}
-    it 'the :create_member_approvals request should rightly fail given that its me'  do
-      begin
-        req = :create_member_approvals
-        @requests.delete(req)
-        @sender.send(req, {urlname: testing_group_urlname})
-        raise "TEST FAILED #{req}"
-      rescue Rubeetup::MeetupResponseError => e
-        expect(e.response.parsed_body[:errors][0][:code]).to eq('permission_error')
-        puts 'COMPLETED ' + req.to_s
-      end
-    end
-
-    #  DELETE MEMBER APPROVALS FAILS BECAUSE IT'S NOT ME
-    # {:errors=>[{:code=>"permission_error", :message=>"you do not organize this Meetup"}, {:code=>"member_error", :message=>"member is required"}]}
-    it 'the :delete_member_approvals request should rightly fail given that its me'  do
-      begin
-        req = :delete_member_approvals
-        @requests.delete(req)
-        @sender.send(req, {urlname: testing_group_urlname})
-        raise "TEST FAILED #{req}"
-      rescue Rubeetup::MeetupResponseError => e
-        expect(e.response.parsed_body[:errors][0][:code]).to eq('auth_fail')
-        puts 'COMPLETED ' + req.to_s
-      end
-    end
-
-
-
-
-    # THIS BLOCK ONLY HANDLES 1 REQUEST.... SO REFACTOR AWAY
-    # IT MAY BE WORTH TO MAKE THE MEMBER TESTS AS SINGLES
-    it 'gets the adequate responses' do
-
-      selected = selected = @requests.select {|key, _|  (key.to_s =~ /member/)}.keys
-      @requests.delete_if {|key, _| selected.include? key}
-      time = compute_delay(selected.size)
-      selected.each do |req|
-        pause(time) if time
-        puts 'INIT ' + req.to_s
-        @sender.send(req, {id: @member_id})
-        puts 'COMPLETED ' + req.to_s
-      end
-
-      puts @requests.keys
-
+  it 'correctly handles :delete_event' do
+    VCR.use_cassette('delete_event') do
+      expect{@sender.delete_event()}.not_to raise_error
     end
   end
 
+  it 'correctly handles :get_event_comments' do
+    VCR.use_cassette('get_event_comments') do
+      expect{@sender.get_event_comments()}.not_to raise_error
+    end
+  end
 
+  it 'correctly handles :create_event_comment' do
+    VCR.use_cassette('create_event_comment') do
+      expect{@sender.create_event_comment()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_event_comment' do
+    VCR.use_cassette('get_event_comment') do
+      expect{@sender.get_event_comment()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :delete_event_comment' do
+    VCR.use_cassette('delete_event_comment') do
+      expect{@sender.delete_event_comment()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_event_comment_flag' do
+    VCR.use_cassette('create_event_comment_flag') do
+      expect{@sender.create_event_comment_flag()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_event_comment_subscribe' do
+    VCR.use_cassette('create_event_comment_subscribe') do
+      expect{@sender.create_event_comment_subscribe()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :delete_event_comment_subscribe' do
+    VCR.use_cassette('delete_event_comment_subscribe') do
+      expect{@sender.delete_event_comment_subscribe()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_event_comment_like' do
+    VCR.use_cassette('create_event_comment_like') do
+      expect{@sender.create_event_comment_like()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :delete_event_comment_like' do
+    VCR.use_cassette('delete_event_comment_like') do
+      expect{@sender.delete_event_comment_like()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_event_comment_likes' do
+    VCR.use_cassette('get_event_comment_likes') do
+      expect{@sender.get_event_comment_likes()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_event_ratings' do
+    VCR.use_cassette('get_event_ratings') do
+      expect{@sender.get_event_ratings()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_event_rating' do
+    VCR.use_cassette('create_event_rating') do
+      expect{@sender.create_event_rating()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_attendance' do
+    VCR.use_cassette('create_attendance') do
+      expect{@sender.create_attendance()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_attendance' do
+    VCR.use_cassette('get_attendance') do
+      expect{@sender.get_attendance()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_event_payments' do
+    VCR.use_cassette('create_event_payments') do
+      expect{@sender.create_event_payments()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_watchlist' do
+    VCR.use_cassette('create_watchlist') do
+      expect{@sender.create_watchlist()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :delete_watchlist' do
+    VCR.use_cassette('delete_watchlist') do
+      expect{@sender.delete_watchlist()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_boards' do
+    VCR.use_cassette('get_boards') do
+      expect{@sender.get_boards()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_discussions' do
+    VCR.use_cassette('get_discussions') do
+      expect{@sender.get_discussions()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_discussion_posts' do
+    VCR.use_cassette('get_discussion_posts') do
+      expect{@sender.get_discussion_posts()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_categories' do
+    VCR.use_cassette('get_categories') do
+      expect{@sender.get_categories()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_cities' do
+    VCR.use_cassette('get_cities') do
+      expect{@sender.get_cities()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_dashboard' do
+    VCR.use_cassette('get_dashboard') do
+      expect{@sender.get_dashboard()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_activity' do
+    VCR.use_cassette('get_activity') do
+      expect{@sender.get_activity()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_groups' do
+    VCR.use_cassette('get_groups') do
+      expect{@sender.get_groups()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_comments' do
+    VCR.use_cassette('get_comments') do
+      expect{@sender.get_comments()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_group_photo' do
+    VCR.use_cassette('create_group_photo') do
+      expect{@sender.create_group_photo()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_find_groups' do
+    VCR.use_cassette('get_find_groups') do
+      expect{@sender.get_find_groups()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_group' do
+    VCR.use_cassette('get_group') do
+      expect{@sender.get_group()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :edit_group' do
+    VCR.use_cassette('edit_group') do
+      expect{@sender.edit_group()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_group_topics' do
+    VCR.use_cassette('create_group_topics') do
+      expect{@sender.create_group_topics()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :delete_group_topics' do
+    VCR.use_cassette('delete_group_topics') do
+      expect{@sender.delete_group_topics()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_recommended_groups' do
+    VCR.use_cassette('get_recommended_groups') do
+      expect{@sender.get_recommended_groups()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_recommended_groups_ignores' do
+    VCR.use_cassette('create_recommended_groups_ignores') do
+      expect{@sender.create_recommended_groups_ignores()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_similar_groups' do
+    VCR.use_cassette('get_similar_groups') do
+      expect{@sender.get_similar_groups()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_members' do
+    VCR.use_cassette('get_members') do
+      expect{@sender.get_members()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_member' do
+    VCR.use_cassette('get_member') do
+      expect{@sender.get_member()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :edit_member' do
+    VCR.use_cassette('edit_member') do
+      expect{@sender.edit_member()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :delete_member_photo' do
+    VCR.use_cassette('delete_member_photo') do
+      expect{@sender.delete_member_photo()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_member_photo' do
+    VCR.use_cassette('create_member_photo') do
+      expect{@sender.create_member_photo()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_status' do
+    VCR.use_cassette('get_status') do
+      expect{@sender.get_status()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_notifications' do
+    VCR.use_cassette('get_notifications') do
+      expect{@sender.get_notifications()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_notifications_read' do
+    VCR.use_cassette('create_notifications_read') do
+      expect{@sender.create_notifications_read()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_oembed' do
+    VCR.use_cassette('get_oembed') do
+      expect{@sender.get_oembed()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :delete_photo' do
+    VCR.use_cassette('delete_photo') do
+      expect{@sender.delete_photo()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_photo_comments' do
+    VCR.use_cassette('get_photo_comments') do
+      expect{@sender.get_photo_comments()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_photo_comment' do
+    VCR.use_cassette('create_photo_comment') do
+      expect{@sender.create_photo_comment()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_photo_albums' do
+    VCR.use_cassette('get_photo_albums') do
+      expect{@sender.get_photo_albums()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_photos' do
+    VCR.use_cassette('get_photos') do
+      expect{@sender.get_photos()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_photo_album' do
+    VCR.use_cassette('create_photo_album') do
+      expect{@sender.create_photo_album()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_photo' do
+    VCR.use_cassette('create_photo') do
+      expect{@sender.create_photo()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_profiles' do
+    VCR.use_cassette('get_profiles') do
+      expect{@sender.get_profiles()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_profile' do
+    VCR.use_cassette('create_profile') do
+      expect{@sender.create_profile()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :edit_profile' do
+    VCR.use_cassette('edit_profile') do
+      expect{@sender.edit_profile()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_profile' do
+    VCR.use_cassette('get_profile') do
+      expect{@sender.get_profile()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :delete_profile' do
+    VCR.use_cassette('delete_profile') do
+      expect{@sender.delete_profile()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_member_approvals' do
+    VCR.use_cassette('create_member_approvals') do
+      expect{@sender.create_member_approvals()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :delete_member_approvals' do
+    VCR.use_cassette('delete_member_approvals') do
+      expect{@sender.delete_member_approvals()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_rsvps' do
+    VCR.use_cassette('get_rsvps') do
+      expect{@sender.get_rsvps()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_rsvp' do
+    VCR.use_cassette('create_rsvp') do
+      expect{@sender.create_rsvp()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :edit_rsvp' do
+    VCR.use_cassette('edit_rsvp') do
+      expect{@sender.edit_rsvp()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_rsvp' do
+    VCR.use_cassette('get_rsvp') do
+      expect{@sender.get_rsvp()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_topic_categories' do
+    VCR.use_cassette('get_topic_categories') do
+      expect{@sender.get_topic_categories()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_topics' do
+    VCR.use_cassette('get_topics') do
+      expect{@sender.get_topics()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_recommended_group_topics' do
+    VCR.use_cassette('get_recommended_group_topics') do
+      expect{@sender.get_recommended_group_topics()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_open_venues' do
+    VCR.use_cassette('get_open_venues') do
+      expect{@sender.get_open_venues()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_venues' do
+    VCR.use_cassette('get_venues') do
+      expect{@sender.get_venues()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_group_venues' do
+    VCR.use_cassette('get_group_venues') do
+      expect{@sender.get_group_venues()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :get_recommended_venues' do
+    VCR.use_cassette('get_recommended_venues') do
+      expect{@sender.get_recommended_venues()}.not_to raise_error
+    end
+  end
+
+  it 'correctly handles :create_venue' do
+    VCR.use_cassette('create_venue') do
+      expect{@sender.create_venue()}.not_to raise_error
+    end
+  end
 
 
 
 =begin
 
   it 'performs requests with no errors' do
-    #puts @sender.delete_event(id: "223538018").inspect
-    #puts "DONEEEEEEEEEEEEEEEE ONCE"
-    #expect{@sender.delete_event(id: "223538018")}.not_to raise_error
+    event = @sender.create_event(group_id: testing_group_id, group_urlname: testing_group_urlname, name: 'testolino', time: 1442041200000).first
+    expect{@sender.delete_event(id: event.id)}.not_to raise_error
   end
 
   it 'performs photo upload with no errors' do
-    event = @sender.create_event(group_id: testing_group_id, group_urlname: testing_group_urlname, name: 'pic test')
-    expect{@sender.create_photo(event_id: event.first.id, photo: "#{test_files_folder}cat.png")}.not_to raise_error
+    #event = @sender.create_event(group_id: testing_group_id, group_urlname: testing_group_urlname, name: 'pic test')
+    #expect{@sender.create_photo(event_id: event.first.id, photo: "#{test_files_folder}cat.png")}.not_to raise_error
   end
 =end
 end

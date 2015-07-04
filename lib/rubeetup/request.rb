@@ -67,11 +67,11 @@ module Rubeetup
     #
     def to_s
       <<-DOC.gsub(/^ {8}/, '')
-        REQUEST
+        \nREQUEST
         name => #{name}
         verb => #{http_verb}
         path => #{method_path}
-        options => #{options.inspect}
+        options => #{options.inspect}\n
       DOC
     end
 
@@ -83,11 +83,11 @@ module Rubeetup
     end
 
     def verify_existence
-      fail Rubeetup::RequestError, existence_message unless is_in_catalog?
+      fail error_class, existence_message unless is_in_catalog?
     end
 
     def validate_options
-      fail Rubeetup::RequestError, options_message unless has_all_required_options?
+      fail error_class, options_message unless has_all_required_options?
     end
 
     ##
@@ -124,6 +124,10 @@ module Rubeetup
         documentation for the complete list of requests, and their respective
         required parameters.
       DOC
+    end
+
+    def error_class
+      Rubeetup::RequestError
     end
   end
 end

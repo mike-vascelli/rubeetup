@@ -1,6 +1,6 @@
 {
   "get_open_events": {
-    "path": "->(options) { \"/2/open_events?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/open_events\" }",
     "options": [
       "category",
       "city",
@@ -14,13 +14,13 @@
     ]
   },
   "get_concierge": {
-    "path": "->(options) { \"/2/concierge?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/concierge\" }",
     "options": [
 
     ]
   },
   "get_events": {
-    "path": "->(options) { \"/2/events?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/events\" }",
     "options": [
       "event_id",
       "group_domain",
@@ -42,7 +42,7 @@
     ]
   },
   "get_event": {
-    "path": "->(options) { \"/2/event/#{options[:id]}?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/event/#{options[:id]}\" }",
     "options": [
       "id"
     ]
@@ -60,7 +60,7 @@
     ]
   },
   "get_event_comments": {
-    "path": "->(options) { \"/2/event_comments?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/event_comments\" }",
     "options": [
       "comment_id",
       "event_id",
@@ -76,13 +76,13 @@
         "event_id"
       ],
       [
-        "event_id",
-        "in_reply_to"
+        "in_reply_to",
+        "event_id"
       ]
     ]
   },
   "get_event_comment": {
-    "path": "->(options) { \"/2/event_comment/#{options[:id]}?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/event_comment/#{options[:id]}\" }",
     "options": [
       "id"
     ]
@@ -124,13 +124,13 @@
     ]
   },
   "get_event_comment_likes": {
-    "path": "->(options) { \"/2/event_comment_likes?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/event_comment_likes\" }",
     "options": [
       "comment_id"
     ]
   },
   "get_event_ratings": {
-    "path": "->(options) { \"/2/event_ratings?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/event_ratings\" }",
     "options": [
       "event_id"
     ]
@@ -156,7 +156,7 @@
     ]
   },
   "get_attendance": {
-    "path": "->(options) { \"/#{options[:urlname]}/events/#{options[:event_id]}/attendance?#{stringify(options)}\" }",
+    "path": "->(options) { \"/#{options[:urlname]}/events/#{options[:event_id]}/attendance\" }",
     "options": [
       [
         "event_id",
@@ -194,13 +194,13 @@
     ]
   },
   "get_boards": {
-    "path": "->(options) { \"/#{options[:urlname]}/boards?#{stringify(options)}\" }",
+    "path": "->(options) { \"/#{options[:urlname]}/boards\" }",
     "options": [
       "urlname"
     ]
   },
   "get_discussions": {
-    "path": "->(options) { \"/#{options[:urlname]}/boards/#{options[:board_id]}/discussions?#{stringify(options)}\" }",
+    "path": "->(options) { \"/#{options[:urlname]}/boards/#{options[:board_id]}/discussions\" }",
     "options": [
       [
         "urlname",
@@ -209,7 +209,7 @@
     ]
   },
   "get_discussion_posts": {
-    "path": "->(options) { \"/#{options[:urlname]}/boards/#{options[:board_id]}/discussions/#{options[:discussion_id]}?#{stringify(options)}\" }",
+    "path": "->(options) { \"/#{options[:urlname]}/boards/#{options[:board_id]}/discussions/#{options[:discussion_id]}\" }",
     "options": [
       [
         "urlname",
@@ -219,31 +219,31 @@
     ]
   },
   "get_categories": {
-    "path": "->(options) { \"/2/categories?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/categories\" }",
     "options": [
 
     ]
   },
   "get_cities": {
-    "path": "->(options) { \"/2/cities?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/cities\" }",
     "options": [
 
     ]
   },
   "get_dashboard": {
-    "path": "->(options) { \"/dashboard?#{stringify(options)}\" }",
+    "path": "->(options) { \"/dashboard\" }",
     "options": [
 
     ]
   },
   "get_activity": {
-    "path": "->(options) { \"/activity?#{stringify(options)}\" }",
+    "path": "->(options) { \"/activity\" }",
     "options": [
 
     ]
   },
   "get_groups": {
-    "path": "->(options) { \"/2/groups?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/groups\" }",
     "options": [
       "category_id",
       [
@@ -269,7 +269,7 @@
     ]
   },
   "get_comments": {
-    "path": "->(options) { \"/comments?#{stringify(options)}\" }",
+    "path": "->(options) { \"/comments\" }",
     "options": [
       "group_id",
       "group_urlname",
@@ -294,13 +294,13 @@
     "multipart": "->(options) { options[:photo] = UploadIO.new(options[:photo], 'application/octet-stream') }"
   },
   "get_find_groups": {
-    "path": "->(options) { \"/find/groups?#{stringify(options)}\" }",
+    "path": "->(options) { \"/find/groups\" }",
     "options": [
 
     ]
   },
   "get_group": {
-    "path": "->(options) { \"/#{options[:group_urlname]}?#{stringify(options)}\" }",
+    "path": "->(options) { \"/#{options[:group_urlname]}\" }",
     "options": [
       "group_urlname"
     ]
@@ -330,7 +330,7 @@
     ]
   },
   "get_recommended_groups": {
-    "path": "->(options) { \"/recommended/groups?#{stringify(options)}\" }",
+    "path": "->(options) { \"/recommended/groups\" }",
     "options": [
 
     ]
@@ -342,13 +342,13 @@
     ]
   },
   "get_similar_groups": {
-    "path": "->(options) { \"/#{options[:urlname]}/similar_groups?#{stringify(options)}\" }",
+    "path": "->(options) { \"/#{options[:urlname]}/similar_groups\" }",
     "options": [
       "urlname"
     ]
   },
   "get_members": {
-    "path": "->(options) { \"/2/members?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/members\" }",
     "options": [
       "group_id",
       "group_urlname",
@@ -361,7 +361,7 @@
     ]
   },
   "get_member": {
-    "path": "->(options) { \"/2/member/#{options[:id]}?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/member/#{options[:id]}\" }",
     "options": [
       "id"
     ]
@@ -392,7 +392,7 @@
     ]
   },
   "get_notifications": {
-    "path": "->(options) { \"/notifications?#{stringify(options)}\" }",
+    "path": "->(options) { \"/notifications\" }",
     "options": [
 
     ]
@@ -404,7 +404,7 @@
     ]
   },
   "get_oembed": {
-    "path": "->(options) { \"/oembed?#{stringify(options)}\" }",
+    "path": "->(options) { \"/oembed\" }",
     "options": [
       "url"
     ]
@@ -416,7 +416,7 @@
     ]
   },
   "get_photo_comments": {
-    "path": "->(options) { \"/2/photo_comments?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/photo_comments\" }",
     "options": [
       "photo_id"
     ]
@@ -431,7 +431,7 @@
     ]
   },
   "get_photo_albums": {
-    "path": "->(options) { \"/2/photo_albums?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/photo_albums\" }",
     "options": [
       "photo_album_id",
       "event_id",
@@ -439,7 +439,7 @@
     ]
   },
   "get_photos": {
-    "path": "->(options) { \"/2/photos?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/photos\" }",
     "options": [
       "event_id",
       "group_id",
@@ -474,7 +474,7 @@
     "multipart": "->(options) { options[:photo] = UploadIO.new(options[:photo], 'application/octet-stream') }"
   },
   "get_profiles": {
-    "path": "->(options) { \"/2/profiles?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/profiles\" }",
     "options": [
       "group_id",
       "group_urlname",
@@ -502,7 +502,7 @@
     ]
   },
   "get_profile": {
-    "path": "->(options) { \"/2/profile/#{options[:group_id]}/#{options[:member_id]}?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/profile/#{options[:group_id]}/#{options[:member_id]}\" }",
     "options": [
       [
         "group_id",
@@ -532,7 +532,7 @@
     ]
   },
   "get_rsvps": {
-    "path": "->(options) { \"/2/rsvps?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/rsvps\" }",
     "options": [
       "event_id"
     ]
@@ -556,19 +556,19 @@
     ]
   },
   "get_rsvp": {
-    "path": "->(options) { \"/2/rsvp/#{options[:id]}?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/rsvp/#{options[:id]}\" }",
     "options": [
       "id"
     ]
   },
   "get_topic_categories": {
-    "path": "->(options) { \"/2/topic_categories?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/topic_categories\" }",
     "options": [
 
     ]
   },
   "get_topics": {
-    "path": "->(options) { \"/topics?#{stringify(options)}\" }",
+    "path": "->(options) { \"/topics\" }",
     "options": [
       "member_id",
       "name",
@@ -577,14 +577,14 @@
     ]
   },
   "get_recommended_group_topics": {
-    "path": "->(options) { \"/recommended/group_topics?#{stringify(options)}\" }",
+    "path": "->(options) { \"/recommended/group_topics\" }",
     "options": [
       "text",
       "other_topics"
     ]
   },
   "get_open_venues": {
-    "path": "->(options) { \"/2/open_venues?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/open_venues\" }",
     "options": [
       "country",
       "city",
@@ -597,7 +597,7 @@
     ]
   },
   "get_venues": {
-    "path": "->(options) { \"/2/venues?#{stringify(options)}\" }",
+    "path": "->(options) { \"/2/venues\" }",
     "options": [
       "group_id",
       "group_urlname",
@@ -606,13 +606,13 @@
     ]
   },
   "get_group_venues": {
-    "path": "->(options) { \"/#{:urlname}/venues?#{stringify(options)}\" }",
+    "path": "->(options) { \"/#{:urlname}/venues\" }",
     "options": [
       "urlname"
     ]
   },
   "get_recommended_venues": {
-    "path": "->(options) { \"/recommended/venues?#{stringify(options)}\" }",
+    "path": "->(options) { \"/recommended/venues\" }",
     "options": [
 
     ]

@@ -1,5 +1,4 @@
 require 'json'
-require 'net/http'
 
 module Rubeetup
   ##
@@ -40,10 +39,11 @@ module Rubeetup
     # @return [Array<Rubeetup::ResponseWrapper>] a collection containing the response's data
     #
     def data
-      fail Rubeetup::MeetupResponseError.new(self), error_message unless
-        response.is_a? Net::HTTPSuccess
+      fail error_class.new(self), error_message unless
+        #response.success?
+        success?
       collection = collectionize(parsed_body)
-      collection.map {|elem| Rubeetup::ResponseWrapper.new(elem)}
+      collection.map {|elem| wrapper_class.new(elem)}
     end
 
     # Consider implementing pagination
@@ -52,6 +52,18 @@ module Rubeetup
     #def all; end # Calls #next until no more and returns all the results at once
 
     private
+
+    def success?
+      response.is_a? Net::HTTPSuccess
+    end
+
+    def error_class
+      Rubeetup::MeetupResponseError
+    end
+
+    def wrapper_class
+      Rubeetup::ResponseWrapper
+    end
 
     def collectionize(data)
       return data if data.is_a? Array

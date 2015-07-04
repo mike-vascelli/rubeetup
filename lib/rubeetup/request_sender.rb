@@ -1,4 +1,5 @@
 require 'net/http/post/multipart'
+require 'typhoeus'
 
 module Rubeetup
   ##
@@ -11,21 +12,12 @@ module Rubeetup
     # Destination host
     #
     HOST = 'api.meetup.com'
+    MOST = 'https://api.meetup.com'
 
     ##
     # @return [Net::HTTP] this Sender's http connection
     #
     attr_reader :http
-
-    ##
-    # @return [Symbol] this Sender's chosen request type
-    #
-    attr_reader :response_type
-
-    ##
-    # @return [Symbol] this Sender's chosen multipart handler
-    #
-    attr_reader :multipart_handler_type
 
     ##
     # @return [Rubeetup::Request] this Sender's request job
@@ -37,11 +29,8 @@ module Rubeetup
     #
     attr_reader :response_data
 
-
     def initialize
       @http = Net::HTTP.new(HOST)
-      @multipart_handler_type = Net::HTTP::Post::Multipart
-      @response_type = Rubeetup::RequestResponse
     end
 
     ##
@@ -52,28 +41,81 @@ module Rubeetup
     def get_response(request)
       @request = request
       @response_data = fetch
-      response_type.new(self).data
+      response_class.new(self).data
     end
+
+
+    #################################################################
+    # NET SOLUTION
 
     private
 
     def fetch
-      return multipart_post if request.multipart
-      # else proceed with url-encoded
-      http.send_request(
-        request.http_verb.upcase,
-        request.method_path,
-        stringify(request.options))
+      request.http_verb == :post ? (req = post) : (req = get_or_delete)
+      http.request(req)
+    end
+
+    def get_or_delete
+      path = "#{request.method_path}?#{stringify(request.options)}"
+      http_method_class.new(path)
+    end
+
+    def post
+      request.multipart ? multipart_post : url_encoded_post
+    end
+
+    def url_encoded_post
+      req = http_method_class.new(request.method_path)
+      req.set_form_data(request.options)
+      req
     end
 
     def multipart_post
       encode_resources
-      http.request(multipart_handler_type.new(request.method_path,
-                                              request.options))
+      http_method_class.new(request.method_path, request.options)
     end
 
     def encode_resources
       request.multipart.call(request.options)
+    end
+
+    def http_method_class
+      class_name = "Net::HTTP::#{request.http_verb.capitalize}"
+      class_name << '::Multipart' if request.multipart
+      Object.const_get(class_name)
+    end
+
+    ###############################################################
+
+    #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    # TYPHOEUS SOLUTION
+=begin
+    private
+
+    def fetch
+      options = set_options
+      path = MOST + request.method_path
+      handler_class.new(path, options).run
+    end
+
+    def set_options
+      verb = request.http_verb
+      options = {method: verb}
+      if verb == :post
+        options.merge({body: request.options})
+      else
+        options.merge({params: request.options})
+      end
+    end
+=end
+    #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    def response_class
+      Rubeetup::RequestResponse
+    end
+
+    def handler_class
+      Typhoeus::Request
     end
   end
 end
