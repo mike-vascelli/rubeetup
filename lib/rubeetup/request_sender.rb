@@ -11,7 +11,6 @@ module Rubeetup
     # Destination host
     #
     HOST = 'api.meetup.com'
-    MOST = 'https://api.meetup.com'
 
     ##
     # @return [Net::HTTP] this Sender's http connection
