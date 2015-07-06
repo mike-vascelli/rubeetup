@@ -80,9 +80,12 @@ module Rubeetup
     end
 
     def http_method_class
-      class_name = "Net::HTTP::#{request.http_verb.capitalize}"
-      class_name << '::Multipart' if request.multipart
-      Object.const_get(class_name)
+      class_name = request.http_verb.capitalize.to_s
+      if request.multipart
+        Net::HTTP::Post::Multipart
+      else
+        Net::HTTP.const_get(class_name.to_sym)
+      end
     end
 
     ###############################################################
