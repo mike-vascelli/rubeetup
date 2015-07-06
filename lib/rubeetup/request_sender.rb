@@ -44,10 +44,6 @@ module Rubeetup
       response_class.new(self).data
     end
 
-
-    #################################################################
-    # NET SOLUTION
-
     private
 
     def fetch
@@ -87,31 +83,6 @@ module Rubeetup
         Net::HTTP.const_get(class_name.to_sym)
       end
     end
-
-    ###############################################################
-
-    #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    # TYPHOEUS SOLUTION
-=begin
-    private
-
-    def fetch
-      options = set_options
-      path = MOST + request.method_path
-      handler_class.new(path, options).run
-    end
-
-    def set_options
-      verb = request.http_verb
-      options = {method: verb}
-      if verb == :post
-        options.merge({body: request.options})
-      else
-        options.merge({params: request.options})
-      end
-    end
-=end
-    #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
     def response_class
       Rubeetup::RequestResponse

@@ -39,9 +39,7 @@ module Rubeetup
     # @return [Array<Rubeetup::ResponseWrapper>] a collection containing the response's data
     #
     def data
-      fail error_class.new(self), error_message unless
-        #response.success?  #TYPHOEUS
-        success?            #Net::HTTP
+      fail error_class.new(self), error_message unless success?
       collection = collectionize(parsed_body)
       collection.map {|elem| wrapper_class.new(elem)}
     end
