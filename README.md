@@ -26,6 +26,8 @@ They begin with the action to perform on a resource: (i.e. `create`, `get`, `edi
 
     request name:   get_open_events
 
+All the requests on Rubeetup follow this scheme.
+
 
 ## Supported Requests
 
@@ -87,6 +89,8 @@ event = requester.create_event(group_id: testing_group_id,
                                name: 'test').first
 puts event.id
 ```
+Take a look at the file `spec/lib/integration_spec.rb` to see examples for all the requests
+
 To check each request's own required parameters:
 Look in `lib/rubeetup/requests_lib/meetup_catalog.json`, or at: http://www.meetup.com/meetup_api
 

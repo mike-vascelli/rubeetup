@@ -1,5 +1,4 @@
 require 'net/http/post/multipart'
-require 'typhoeus'
 
 module Rubeetup
   ##
