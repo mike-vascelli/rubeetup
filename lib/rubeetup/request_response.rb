@@ -30,7 +30,7 @@ module Rubeetup
       @response = sender.response_data
       @request = sender.request
       body =  @response.body
-      @parsed_body = blank?(body) ? [] : JSON.parse(body, symbolize_names: true)
+      @parsed_body = blank?(body) ? [] : parse(body)
     end
 
     ##
@@ -40,8 +40,8 @@ module Rubeetup
     #
     def data
       fail error_class.new(self), error_message unless
-        #response.success?
-        success?
+        #response.success?  #TYPHOEUS
+        success?            #Net::HTTP
       collection = collectionize(parsed_body)
       collection.map {|elem| wrapper_class.new(elem)}
     end
@@ -68,6 +68,14 @@ module Rubeetup
     def collectionize(data)
       return data if data.is_a? Array
       data[:results] || [data]
+    end
+
+    def parse(body)
+      begin
+        JSON.parse(body, symbolize_names: true)
+      rescue
+        body
+      end
     end
 
     def error_message

@@ -72,17 +72,20 @@ events.each do |event|
   puts event[:name]
 
   # But Rubeetup also allows you to access elements' keys in OO-style:
-  puts event.name
-       .
-       .
-       .
-  puts event.time
-  puts event.duration
+  puts event.name, event.time, event.duration, ...
 
   venue = event.venue
   puts venue[:address_1]
   puts venue[:city]
 end
+
+pic = requester.create_member_photo(photo: 'spec/test_files/cat.png').first
+puts pic.photo_url, pic.member_photo_id
+
+event = requester.create_event(group_id: testing_group_id,
+                               group_urlname: testing_group_urlname,
+                               name: 'test').first
+puts event.id
 ```
 To check each request's own required parameters:
 Look in `lib/rubeetup/requests_lib/meetup_catalog.json`, or at: http://www.meetup.com/meetup_api

@@ -149,10 +149,11 @@
     "options": [
       [
         "event_id",
-        "urlname"
-      ],
-      "member",
-      "status"
+        "urlname",
+        "member",
+        "status"
+      ]
+
     ]
   },
   "get_attendance": {
@@ -606,7 +607,7 @@
     ]
   },
   "get_group_venues": {
-    "path": "->(options) { \"/#{:urlname}/venues\" }",
+    "path": "->(options) { \"/#{options[:urlname]}/venues\" }",
     "options": [
       "urlname"
     ]
@@ -618,9 +619,10 @@
     ]
   },
   "create_venue": {
-    "path": "->(options) { \"/#{options[:urlname]}/venues\" }",
+    "path": "->(options) { \"/#{options[:group_urlname]}/venues\" }",
     "options": [
       [
+        "group_urlname",
         "address_1",
         "country",
         "city",

@@ -3,7 +3,7 @@ Coveralls.wear!
 
 require 'rubeetup'
 require 'vcr'
-require 'time'
+require 'zlib'
 
 ##
 # Determines whether integration testing is local only, or live over the net
@@ -55,15 +55,84 @@ def testing_group_urlname
 end
 
 ##
-# This sets the interval of time that should pass before VCR re-records all the
-# test files
+# The discussion board id to the Meetup API Testing Sandbox
 #
-def recording_interval
-  (DateTime.now + 7).to_time - DateTime.now.to_time
+def testing_board_id
+  '1195382'
+end
+
+##
+# The member id of a random member of the Meetup API Testing Sandbox
+# @note The Meetup API does not allow you to create member ids so here we are...
+#
+def testing_member_id
+  '184911456'
+end
+
+##
+# The topic id of a random topic
+# @note The Meetup API does not allow you to create topics so here we are...
+#
+def testing_topic_id
+  '197471'
+end
+
+##
+# Implements the storage interface used by VCR. It delegates to a Zipper instance
+# the job of compressing and decompressing canned data.
+#
+class CassettePersister
+  def initialize(system)
+    @system = system
+  end
+
+  def [](name)
+    @system.get(name)
+  end
+
+  def []=(name, content)
+    @system.set(name, content)
+  end
+end
+
+##
+# Implements a file compressor and decompressor which we will use to compress
+# the canned data files coming from VCR.
+# It is amazing really. Before the folder was 9MB, now it is 2.3MB, and the
+# processing cost is negligible, especially for the reads.
+#
+class Zipper
+  PATH = 'spec/test_files/cassettes/'
+
+  def get(name)
+    begin
+      file_name = build_file_name(name)
+      Zlib::GzipReader.open(file_name) {|gzip| gzip.read}
+    rescue
+      # Missing file so tests must go to the server
+    end
+  end
+
+  def set(name, content)
+    file_name = build_file_name(name)
+    File.open(file_name, 'w') do |file|
+      gzip = Zlib::GzipWriter.new(file)
+      gzip << content
+      gzip.close
+    end
+  end
+
+  private
+
+  def build_file_name(name)
+    PATH + name + '.gz'
+  end
 end
 
 VCR.configure do |c|
+  c.cassette_persisters[:persister] = CassettePersister.new(Zipper.new)
+  c.allow_http_connections_when_no_cassette = true
   c.hook_into :webmock
   c.cassette_library_dir = 'spec/test_files/cassettes'
-  c.default_cassette_options = {:re_record_interval => recording_interval}
+  c.default_cassette_options = {persist_with: :persister}
 end
