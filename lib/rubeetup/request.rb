@@ -119,11 +119,17 @@ module Rubeetup
         The provided arguments => '#{options.inspect}' miss one or more
         required parameters.
         The request '#{name}' requires the following parameters:
-        '#{required_options.inspect}'
+        #{required_options_message}
         Please consult rubeetup/requests_lib/meetup_catalog.rb, or the provided
         documentation for the complete list of requests, and their respective
         required parameters.
       DOC
+    end
+
+    def required_options_message
+      str = ''
+      required_options.each {|opt| str << opt.inspect + " OR "}
+      str[0...-4]
     end
 
     def error_class

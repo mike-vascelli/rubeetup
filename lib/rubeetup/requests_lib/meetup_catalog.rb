@@ -23,8 +23,8 @@ module Rubeetup
         #    For 200 runs:  YAML => 0.00315      JSON => 0.00027
         #    Well that just about does it...
         #YAML.load(File.read("#{catalog_dir}meetup_catalog.yaml"))
-
-        hash = JSON.parse(File.read("#{catalog_dir}meetup_catalog.json"), symbolize_names: true)
+        path = File.expand_path('meetup_catalog.json', File.dirname(__FILE__))
+        hash = JSON.parse(File.read(path), symbolize_names: true)
         # Now transform all the required options into symbols
         hash.each {|_, val| val[:options] = collection_symbolyzer(val[:options]) }
       end

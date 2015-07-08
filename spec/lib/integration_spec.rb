@@ -1,7 +1,25 @@
 require 'spec_helper'
 
 if api_key
+  $start = Time.now
+
   describe Rubeetup do
+    ##
+    # Allows the test to pause if the Meetup API request limit has been reached
+    # Meetup allows at most 30 requests every span seconds.
+    # Ugly but necessary
+    #
+    def pause_check
+      return unless ENV['LIVE_TEST'] == 'true'
+      span = 10
+      elapsed = Time.now - $start
+      if elapsed < span
+        puts 'PAUSING'
+        sleep(span - elapsed)
+      end
+      $start = Time.now
+    end
+
     before(:all) do
       @sender = Rubeetup.setup(key: api_key)
     end
@@ -172,6 +190,8 @@ if api_key
     end
 
     it 'correctly handles :create_event_comment_like' do
+      pause_check
+
       VCR.use_cassette('create_event_comment_like---create_event') do
         @event = @sender.create_event(group_id: testing_group_id,
                                       group_urlname: testing_group_urlname,
@@ -353,6 +373,8 @@ if api_key
     end
 
     it 'correctly handles :get_cities' do
+      pause_check
+
       VCR.use_cassette('get_cities') do
         expect{@sender.get_cities}.not_to raise_error
       end
@@ -543,6 +565,8 @@ if api_key
     end
 
     it 'correctly handles :create_photo_comment' do
+      pause_check
+
       VCR.use_cassette('get_photo_comments---create_event') do
         @event = @sender.create_event(group_id: testing_group_id,
                                       group_urlname: testing_group_urlname,
@@ -740,13 +764,15 @@ if api_key
     end
 
     it 'correctly handles :create_venue' do
+      pause_check
+
       VCR.use_cassette('create_venue') do
         expect{@sender.create_venue(group_urlname: testing_group_urlname,
-                                    address_1: '150 Vine st.',
+                                    address_1: '100 Vine st.',
                                     country: 'US',
                                     city: 'Los Angeles',
                                     state: 'CA',
-                                    name: 'plaza')}.not_to raise_error
+                                    name: 'plaza paza')}.not_to raise_error
       end
     end
 

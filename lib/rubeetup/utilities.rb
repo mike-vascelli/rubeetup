@@ -38,14 +38,6 @@ module Rubeetup
     def collection_symbolyzer(array)
       array.map {|elem| elem.is_a?(String) ? elem.to_sym : collection_symbolyzer(elem)}
     end
-
-    ##
-    # Gives you the dir where all the request catalogs should be stored
-    # @return [String] the directory where you should store request catalogs
-    #
-    def catalog_dir
-      'lib/rubeetup/requests_lib/'
-    end
   end
 end
 
