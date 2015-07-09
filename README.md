@@ -1,3 +1,4 @@
+<a href="http://badge.fury.io/rb/rubeetup"><img src="https://badge.fury.io/rb/rubeetup.svg" alt="Gem Version" height="18"></a>
 <a href="https://travis-ci.org/mike-vascelli/rubeetup"><img src="https://travis-ci.org/mike-vascelli/rubeetup.svg?branch=master"/></a>
 <a href="https://codeclimate.com/github/mike-vascelli/rubeetup"><img src="https://codeclimate.com/github/mike-vascelli/rubeetup/badges/gpa.svg" /></a>
 <a href='https://gemnasium.com/mike-vascelli/rubeetup'><img src="https://gemnasium.com/mike-vascelli/rubeetup.svg" alt="Dependency Status" /></a>
@@ -9,7 +10,7 @@
 
 ## Overview
 
-This gem allows you to interact with the `Meetup.com` API in a simple and direct way. It gives you access to all of the available API methods (full `CRUD`), and it also makes sure that all the required parameters are provided with each request.
+This gem allows you to interact with the `Meetup.com` API in a simple and direct way. It gives you access to all of the available API methods (77 methods), and it also makes sure that all the required parameters are provided with each request.
 
 For more information on the Meetup API itself, visit: http://www.meetup.com/meetup_api
 
