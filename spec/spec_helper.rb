@@ -6,13 +6,6 @@ require 'vcr'
 require 'zlib'
 
 ##
-# Determines whether integration testing is local only, or live over the net
-#
-def local_testing
-  false
-end
-
-##
 # Gives you the location of the test files
 # @return [String] Directory containing all test files
 #
@@ -28,6 +21,14 @@ def testing_apikey
   # Set your key if you want.
   # Alternatively you could create an environment variable 'MEETUP_KEY'
   # and let this method as is.
+end
+
+##
+# Determines whether the integration test suite should be run all the way to
+# the Meetup server or not
+#
+def local_testing
+  ENV['LIVE_TEST'] != 'true'
 end
 
 ##
@@ -87,11 +88,16 @@ class CassettePersister
   end
 
   def [](name)
-    @system.get(name)
+    @system.get(absolute_path_to_file(name))
   end
 
   def []=(name, content)
-    @system.set(name, content)
+    @system.set(absolute_path_to_file(name), content)
+  end
+
+  def absolute_path_to_file(name)
+    file = "test_files/cassettes/#{name}.gz"
+    File.expand_path(file, File.dirname(__FILE__))
   end
 end
 
@@ -102,30 +108,20 @@ end
 # processing cost is negligible, especially for the reads.
 #
 class Zipper
-  PATH = 'spec/test_files/cassettes/'
-
   def get(name)
     begin
-      file_name = build_file_name(name)
-      Zlib::GzipReader.open(file_name) {|gzip| gzip.read}
+      Zlib::GzipReader.open(name) {|gzip| gzip.read}
     rescue
       # Missing file so tests must go to the server
     end
   end
 
   def set(name, content)
-    file_name = build_file_name(name)
-    File.open(file_name, 'w') do |file|
+    File.open(name, 'w') do |file|
       gzip = Zlib::GzipWriter.new(file)
       gzip << content
       gzip.close
     end
-  end
-
-  private
-
-  def build_file_name(name)
-    PATH + name + '.gz'
   end
 end
 
@@ -134,5 +130,7 @@ VCR.configure do |c|
   c.allow_http_connections_when_no_cassette = true
   c.hook_into :webmock
   c.cassette_library_dir = 'spec/test_files/cassettes'
-  c.default_cassette_options = {persist_with: :persister}
+  c.default_cassette_options = {persist_with: :persister,
+                                match_requests_on: [:method,
+                                                    VCR.request_matchers.uri_without_param(:key)]}
 end

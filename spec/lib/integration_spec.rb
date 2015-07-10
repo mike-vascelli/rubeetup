@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-if api_key
+if local_testing || api_key
   $start = Time.now
 
   describe Rubeetup do
     ##
     # Allows the test to pause if the Meetup API request limit has been reached
-    # Meetup allows at most 30 requests every span seconds.
+    # Meetup allows at most 30 requests every 10 seconds.
     # Ugly but necessary
     #
     def pause_check
-      return unless ENV['LIVE_TEST'] == 'true'
+      return if local_testing
       span = 10
       elapsed = Time.now - $start
       if elapsed < span
@@ -21,7 +21,7 @@ if api_key
     end
 
     before(:all) do
-      @sender = Rubeetup.setup(key: api_key)
+      @sender = Rubeetup.setup(key: (local_testing ? 'test' : api_key))
     end
 
     it 'correctly handles :get_open_events' do
