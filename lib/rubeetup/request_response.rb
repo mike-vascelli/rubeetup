@@ -41,7 +41,7 @@ module Rubeetup
     def data
       fail error_class.new(self), error_message unless success?
       collection = collectionize(parsed_body)
-      collection.map {|elem| wrapper_class.new(elem)}
+      collection.map {|elem| wrapper_class.wrapperize!(elem)}
     end
 
     # Consider implementing pagination

@@ -78,8 +78,7 @@ events.each do |event|
   puts event.name, event.time, event.duration, ...
 
   venue = event.venue
-  puts venue[:address_1]
-  puts venue[:city]
+  puts venue.address_1, venue.city, ...
 end
 
 pic = requester.create_member_photo(photo: 'spec/test_files/cat.png').first
